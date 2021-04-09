@@ -17,9 +17,9 @@ resource "aws_security_group" "docker_demo_alb_sg" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags {
-    Name = "alb-security-group-docker-demo"
-  }
+//  tags {
+//    Name = "alb-security-group-docker-demo"
+//  }
 }
 
 # using ALB - instances in private subnets
@@ -27,9 +27,9 @@ resource "aws_alb" "docker_demo_alb" {
   name                      = "docker-demo-alb"
   security_groups           = ["${aws_security_group.docker_demo_alb_sg.id}"]
   subnets                   = ["${aws_subnet.private.*.id}"]
-  tags {
-    Name = "docker-demo-alb"
-  }
+//  tags {
+//    Name = "docker-demo-alb"
+//  }
 }
 
 # alb target group
