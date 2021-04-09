@@ -96,7 +96,7 @@ resource "aws_main_route_table_association" "public" {
 # and associate route table with each subnet
 resource "aws_route_table_association" "public" {
   count           = length(var.azs)
-  subnet_id      = element(data.aws_subnet_ids.public.ids, count.index)
+  subnet_id      = sort(data.aws_subnet_ids.public.ids, count.index)[0]
   route_table_id = aws_route_table.public.id
 }
 
