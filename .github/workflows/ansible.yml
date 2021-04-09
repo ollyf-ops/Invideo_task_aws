@@ -1,6 +1,5 @@
 name: 'Ansible deploy'
-on:
-  pull_request:
+on: push
 
 jobs:
   anisble-deploy:
