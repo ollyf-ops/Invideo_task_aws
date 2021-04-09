@@ -4,30 +4,15 @@ on: push
 jobs:
   anisble-deploy:
     name: 'Ansible Deploy'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
-
-      - name: Creating .ssh folder and permitting it with 777 
-        run: |
-          sudo mkdir -p /home/runner/.ssh 
-          cd /home/runner && sudo ls -a
-          sudo chmod 777 /home/runner/.ssh
-          cd /home/runner 
-          pwd
-          cd /home/runner/.ssh && touch id_rsa
-          sudo chmod 777 id_rsa
-      - name: Copy the key data from secrets to id_rsa file 
-        run: |
-          cd /home/runner/.ssh
-          echo "${{secrets.PEM_KEY}}" > id_rsa
-          cat id_rsa && sudo chmod 600 /home/runner/.ssh/id_rsa
+        uses: actions/checkout@main
       - name: check ansible connectivity
-        run: ansible all -m ping
+        run: ansible prod-web -m ping
       - name: Ansible deployment for roles
         id: ansible
         run: |
-          cd deployment/
-          ansible-playbook prod-web.yml --tags=docker-role
-          ansible-playbook prod-web.yml --tags=create-role
+          cd ./deployment/
+          ansible-playbook prod-web.yml --tags=docker-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+          ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"

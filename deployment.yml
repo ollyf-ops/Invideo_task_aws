@@ -1,4 +1,5 @@
 name: 'Ansible deploy'
+on: push
 
 jobs:
   anisble-deploy:
@@ -8,10 +9,10 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@main
       - name: check ansible connectivity
-        run: ansible all -m ping
+        run: ansible prod-web -m ping
       - name: Ansible deployment for roles
         id: ansible
         run: |
           cd ./deployment/
-          ansible-playbook prod-web.yml --tags=ansible-role-docker
-          ansible-playbook prod-web.yml --tags=create-role
+          ansible-playbook prod-web.yml --tags=docker-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+          ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
