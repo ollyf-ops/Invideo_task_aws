@@ -1,0 +1,7 @@
+#From Ansible Galaxy
+- src: clouddrove.ansible_role_common
+  name: common
+- src: clouddrove.ansible_role_php
+  name: php
+- src: clouddrove.ansible_role_nginx
+  name: nginx

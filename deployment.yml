@@ -1,0 +1,17 @@
+name: 'Ansible deploy'
+
+jobs:
+  anisble-deploy:
+    name: 'Ansible Deploy'
+    runs-on: ubuntu-18.04
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@main
+      - name: check ansible connectivity
+        run: ansible all -m ping
+      - name: Ansible deployment for roles
+        id: ansible
+        run: |
+          cd ./deployment/
+          ansible-playbook prod-web.yml --tags=ansible-role-docker
+          ansible-playbook prod-web.yml --tags=create-role
