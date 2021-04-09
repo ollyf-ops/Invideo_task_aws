@@ -17,9 +17,9 @@ resource "aws_security_group" "rds_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
-    Name = "rds_security_group"
-  }
+//  tags {
+//    Name = "rds_security_group"
+//  }
 }
 
 resource "aws_db_instance" "db" {
@@ -39,9 +39,9 @@ resource "aws_db_instance" "db" {
   # commented : if there is no default subnet, this will give us an error
   #db_subnet_group_name   = "rds_test"
 
-  tags {
-    Name = "Postgres Database in ${var.aws_region}"
-  }
+//  tags {
+//    Name = "Postgres Database in ${var.aws_region}"
+//  }
 }
 
 resource "aws_db_subnet_group" "rds_test" {
