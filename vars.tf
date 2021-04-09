@@ -28,7 +28,7 @@ variable "ec2_amis" {
   type        = "map"
 
   default = {
-    "us-east-1" = "ami-010c1b7d4902b1ab1"
+    "us-east-1" = "ami-0075badd6a3774a86"
   }
 }
 

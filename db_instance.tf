@@ -1,6 +1,6 @@
-resource "aws_security_group" "rds_security_group" {
-  name        = "rds_security_group"
-  description = "rds security group"
+resource "aws_security_group" "rds_invideo_security_group" {
+  name        = "rds_invideo_security_group"
+  description = "rds invideo security group"
   vpc_id      = "${aws_vpc.demo.id}"
 
   ingress {
@@ -32,7 +32,8 @@ resource "aws_db_instance" "db" {
   username          = "${var.rds_admin_user}"
   password          = "${var.rds_admin_password}"
   publicly_accessible    = "${var.rds_publicly_accessible}"
-  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
+//  vpc_security_group_ids = [aws_security_group.rds_invideo_security_group.id]
+  vpc_security_group_ids = [aws_security_group.docker_demo_ec2_security_group.id]
   final_snapshot_identifier = "invideo-db-backup"
   skip_final_snapshot       = true
 
@@ -44,8 +45,8 @@ resource "aws_db_instance" "db" {
 //  }
 }
 
-resource "aws_db_subnet_group" "rds_test" {
-  name       = "rds_test"
+resource "aws_db_subnet_group" "rds_invideo_test" {
+  name       = "rds_invideo_test"
   count         = "3"
   subnet_ids                   = aws_subnet.private.*.id
 
