@@ -26,10 +26,9 @@ resource "aws_security_group" "docker_demo_ec2_security_group" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-tags {
-  Name = "docker_demo_ec2_security_group"
+  tags {
+    Name = "docker_demo_ec2_security_group"
+  }
 }
 
 # EC2 instances, one per availability zone
