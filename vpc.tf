@@ -22,17 +22,18 @@ resource "aws_vpc" "demo" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags {
-    Name = "docker-nginx-demo-vpc"
-  }
+//  tag {
+//    key = "Name"
+//    value = "docker-nginx-demo-vpc"
+//  }
 }
 
 # let vpc talk to the internet - create internet gateway 
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.demo.id}"
-  tags {
-    Name = "docker-nginx-demo-igw"
-  }
+//  tags {
+//    Name = "docker-nginx-demo-igw"
+//  }
 }
 
 # create one public subnet per availability zone
@@ -42,9 +43,9 @@ resource "aws_subnet" "public" {
   count                   = "${length(var.azs)}"
   map_public_ip_on_launch = true
   vpc_id                  = "${aws_vpc.demo.id}"
-  tags {
-    Name = "subnet-pub-${count.index}"
-  }
+//  tags {
+//    Name = "subnet-pub-${count.index}"
+//  }
 }
 
 # create one private subnet per availability zone
@@ -54,9 +55,9 @@ resource "aws_subnet" "private" {
   count                   = "${length(var.azs)}"
   map_public_ip_on_launch = true
   vpc_id                  = "${aws_vpc.demo.id}"
-  tags {
-    Name = "subnet-priv-${count.index}"
-  }
+//  tags {
+//    Name = "subnet-priv-${count.index}"
+//  }
 }
 
 # dynamic list of the public subnets created above
@@ -74,9 +75,9 @@ data "aws_subnet_ids" "private" {
 # main route table for vpc and subnets
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.demo.id}"
-  tags {
-    Name = "public_route_table_main"
-  }
+//  tags {
+//    Name = "public_route_table_main"
+//  }
 }
 
 # add public gateway to the route table
@@ -118,10 +119,10 @@ resource "aws_nat_gateway" "demo" {
 # for each of the private ranges, create a "private" route table.
 resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.demo.id}"
-  count ="${length(var.azs)}" 
-  tags { 
-    Name = "private_subnet_route_table_${count.index}"
-  }
+  count ="${length(var.azs)}"
+//  tags {
+//    Name = "private_subnet_route_table_${count.index}"
+//  }
 }
 
 # add a nat gateway to each private subnet's route table
