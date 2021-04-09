@@ -96,7 +96,7 @@ resource "aws_main_route_table_association" "public" {
 # and associate route table with each subnet
 resource "aws_route_table_association" "public" {
   count           = length(var.azs)
-  subnet_id      = element(data.aws_subnet_ids.public.ids, count.index)
+  subnet_id      = [element(data.aws_subnet_ids.public.ids, count.index)]
   route_table_id = aws_route_table.public.id
 }
 
@@ -112,7 +112,7 @@ resource "aws_eip" "demo_eip" {
 resource "aws_nat_gateway" "demo" {
     count    = length(var.azs)
     allocation_id = element(aws_eip.demo_eip.*.id, count.index)
-    subnet_id = element(aws_subnet.public.*.id, count.index)
+    subnet_id = [element(aws_subnet.public.*.id, count.index)]
     depends_on = ["aws_internet_gateway.gw"]
 }
 
@@ -128,9 +128,9 @@ resource "aws_route_table" "private" {
 # add a nat gateway to each private subnet's route table
 resource "aws_route" "private_nat_gateway_route" {
   count = length(var.azs)
-  route_table_id = element(aws_route_table.private.*.id, count.index)
+  route_table_id = [element(aws_route_table.private.*.id, count.index)]
   destination_cidr_block = "0.0.0.0/0"
   depends_on = ["aws_route_table.private"]
-  nat_gateway_id = element(aws_nat_gateway.demo.*.id, count.index)
+  nat_gateway_id = [element(aws_nat_gateway.demo.*.id, count.index)]
 }
 

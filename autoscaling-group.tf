@@ -2,7 +2,7 @@
 resource "aws_launch_configuration" "demo" {
   image_id               = lookup(var.ec2_amis, var.aws_region)
   instance_type          = "t2.micro"
-  security_groups        = aws_security_group.docker_demo_ec2_security_group.id
+  security_groups        = [aws_security_group.docker_demo_ec2_security_group.id]
   user_data              = file("user_data.sh")
   lifecycle {
     create_before_destroy = true

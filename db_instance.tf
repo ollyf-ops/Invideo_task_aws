@@ -32,7 +32,7 @@ resource "aws_db_instance" "db" {
   username          = "${var.rds_admin_user}"
   password          = "${var.rds_admin_password}"
   publicly_accessible    = "${var.rds_publicly_accessible}"
-  vpc_security_group_ids = aws_security_group.rds_security_group.id
+  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
   final_snapshot_identifier = "invideo-db-backup"
   skip_final_snapshot       = true
 

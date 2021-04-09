@@ -25,7 +25,7 @@ resource "aws_security_group" "docker_demo_alb_sg" {
 # using ALB - instances in private subnets
 resource "aws_alb" "docker_demo_alb" {
   name                      = "docker-demo-alb"
-  security_groups           = aws_security_group.docker_demo_alb_sg.id
+  security_groups           = [aws_security_group.docker_demo_alb_sg.id]
   subnets                   = aws_subnet.private.*.id
 //  tags {
 //    Name = "docker-demo-alb"
