@@ -1,9 +1,9 @@
 # creating launch configuration
 resource "aws_launch_configuration" "demo" {
-  image_id               = "${lookup(var.ec2_amis, var.aws_region)}"
+  image_id               = lookup(var.ec2_amis, var.aws_region)
   instance_type          = "t2.micro"
-  security_groups        = ["${aws_security_group.docker_demo_ec2_security_group.id}"]
-  user_data              = "${file("user_data.sh")}"
+  security_groups        = aws_security_group.docker_demo_ec2_security_group.id
+  user_data              = file("user_data.sh")
   lifecycle {
     create_before_destroy = true
   }
@@ -12,15 +12,15 @@ resource "aws_launch_configuration" "demo" {
 # creating auto-scaling group
 resource "aws_autoscaling_group" "demo" {
   name                        = "docker-demo-autoscaling-group"
-  launch_configuration = "${aws_launch_configuration.demo.id}"
-  #count                   = "${length(var.azs)}"
-  #availability_zones       = "${element(var.azs,count.index)}"
+  launch_configuration = aws_launch_configuration.demo.id
+  #count                   = length(var.azs)
+  #availability_zones       = element(var.azs,count.index)
 
-  #vpc_zone_identifier = ["${element(aws_subnet.private.*.id, count.index)}"]
-  #load_balancers = ["${aws_alb.docker_demo_alb.name}"]
+  #vpc_zone_identifier = element(aws_subnet.private.*.id, count.index)]
+  #load_balancers = aws_alb.docker_demo_alb.name]
 
   #availability_zones       = "[${var.azs.*}]"
-  vpc_zone_identifier       = ["${aws_subnet.private.*.id}"]
+  vpc_zone_identifier       = aws_subnet.private.*.id
 
   desired_capacity = 3
   max_size = 6
