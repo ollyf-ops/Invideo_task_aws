@@ -1,22 +1,22 @@
-//# one vpc to hold them all, and in the cloud bind them
-//resource "tls_private_key" "invideo" {
-//  algorithm = "RSA"
-//}
-//resource "aws_key_pair" "generated_key" {
-//  key_name = "invideo"
-//  public_key = tls_private_key.invideo.public_key_openssh
-//  depends_on = [
-//    tls_private_key.invideo
-//  ]
-//}
-//resource "local_file" "key" {
-//  content = tls_private_key.invideo.private_key_pem
-//  filename = "invideo.pem"
-//  file_permission ="0400"
-//  depends_on = [
-//    tls_private_key.invideo
-//  ]
-//}
+# one vpc to hold them all, and in the cloud bind them
+resource "tls_private_key" "invideo" {
+  algorithm = "RSA"
+}
+resource "aws_key_pair" "generated_key" {
+  key_name = "invideo"
+  public_key = tls_private_key.invideo.public_key_openssh
+  depends_on = [
+    tls_private_key.invideo
+  ]
+}
+resource "local_file" "key" {
+  content = tls_private_key.invideo.private_key_pem
+  filename = "invideo.pem"
+  file_permission ="0400"
+  depends_on = [
+    tls_private_key.invideo
+  ]
+}
 
 resource "aws_vpc" "demo" {
   cidr_block           = "10.0.0.0/16"
