@@ -1,6 +1,6 @@
 # security group for application load balancer
-resource "aws_security_group" "docker_default_alb_sg" {
-  name        = "docker-nginx-default-alb-sg"
+resource "aws_security_group" "webserver_default_alb_sg" {
+  name        = "webserver-nginx-default-alb-sg"
   description = "allow incoming HTTP traffic only"
   vpc_id      = local.vpc_id
 
@@ -18,23 +18,23 @@ resource "aws_security_group" "docker_default_alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "alb-security-group-docker-default"
+    Name = "alb-security-group-webserver-nginx-default"
   }
 }
 
 # using ALB - instances in private subnets
-resource "aws_alb" "docker_default_alb" {
-  name                      = "docker-default-alb"
-  security_groups           = [aws_security_group.docker_default_alb_sg.id]
+resource "aws_alb" "webserver_default_alb" {
+  name                      = "webserver-default-alb"
+  security_groups           = [aws_security_group.webserver_default_alb_sg.id]
   subnets                   = aws_subnet.public.*.id
   tags = {
-    Name = "docker-default-alb"
+    Name = "webserver-default-alb"
   }
 }
 
 # alb target group
-resource "aws_alb_target_group" "docker-default-tg" {
-  name     = "docker-default-alb-target-group"
+resource "aws_alb_target_group" "webserver-default-tg" {
+  name     = "webserver-default-alb-target-group"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -46,21 +46,21 @@ resource "aws_alb_target_group" "docker-default-tg" {
 
 # listener
 resource "aws_alb_listener" "http_listener" {
-  load_balancer_arn = aws_alb.docker_default_alb.arn
+  load_balancer_arn = aws_alb.webserver_default_alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.docker-default-tg.arn
+    target_group_arn = aws_alb_target_group.webserver-default-tg.arn
     type             = "forward"
   }
 }
 
 # target group attach
 # using nested interpolation functions and the count parameter to the "aws_alb_target_group_attachment"
-resource "aws_lb_target_group_attachment" "docker-default" {
+resource "aws_lb_target_group_attachment" "webserver-default" {
   count            = length(var.azs)
-  target_group_arn = aws_alb_target_group.docker-default-tg.arn
-  target_id        = element(split(",", join(",", aws_instance.docker_default.*.id)), count.index)
+  target_group_arn = aws_alb_target_group.webserver-default-tg.arn
+  target_id        = element(split(",", join(",", aws_instance.webserver_default.*.id)), count.index)
   port             = 80
 }

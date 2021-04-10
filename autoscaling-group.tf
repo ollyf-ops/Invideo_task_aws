@@ -36,5 +36,5 @@ resource "aws_autoscaling_group" "default" {
 
 # ALB DNS is generated dynamically, return URL so that it can be used
 output "url" {
-  value = "http://${aws_alb.docker_default_alb.dns_name}/"
+  value = "http://${aws_alb.webserver_default_alb.dns_name}/"
 }
