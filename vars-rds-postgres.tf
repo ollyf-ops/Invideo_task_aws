@@ -5,7 +5,7 @@ variable "rds_identifier" {
 }
 
 variable "rds_instance_type" {
-  default = "db.t2.micro"
+  default = "db.m5.large"
 }
 
 variable "rds_storage_size" {
