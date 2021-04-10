@@ -8,7 +8,7 @@ resource "aws_security_group" "rds_default_security_group" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["172.31.6.0/24"]
+    cidr_blocks = ["172.31.0.0/24"]
   }
 
   egress {
@@ -47,8 +47,8 @@ resource "aws_db_instance" "db" {
 }
 
 resource "aws_db_subnet_group" "rds_default_test" {
-  name       = "rds_default_test"
-  count      = "3"
+  name       = "rds_default_test-${count.index}"
+  count      = length(var.azs)
   subnet_ids = aws_subnet.private.*.id
 
 }
