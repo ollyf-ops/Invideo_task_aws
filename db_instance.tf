@@ -47,8 +47,8 @@ resource "aws_db_instance" "db" {
 
 resource "aws_db_subnet_group" "rds_invideo_test" {
   name       = "rds_invideo_test"
-  count         = "3"
-  subnet_ids                   = aws_subnet.private.*.id
+  count      = "3"
+  subnet_ids = aws_subnet.private.*.id
 
 }
 

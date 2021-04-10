@@ -34,7 +34,8 @@ resource "aws_security_group" "docker_demo_ec2_security_group" {
 # EC2 instances, one per availability zone
 resource "aws_instance" "docker_demo" {
   ami                         = lookup(var.ec2_amis, var.aws_region)
-  associate_public_ip_address = true
+  associate_public_ip_address = false
+  publicly_accessible         = "${var.ec2_publicly_accessible}"
   count                       = length(var.azs)
   depends_on                  = ["aws_subnet.private"]
   instance_type               = "t2.micro"
