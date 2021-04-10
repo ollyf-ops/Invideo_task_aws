@@ -25,8 +25,8 @@ resource "aws_security_group" "webserver_default_alb_sg" {
 # using ALB - instances in private subnets
 resource "aws_alb" "webserver_default_alb" {
   name                      = "webserver-default-alb"
-  security_groups           = [aws_security_group.webserver_default_alb_sg.vpc_id]
-  subnets                   = aws_subnet.public.*.vpc_id
+  security_groups           = [aws_security_group.webserver_default_alb_sg.id]
+  subnets                   = aws_subnet.public.*.id
   tags = {
     Name = "webserver-default-alb"
   }

@@ -40,7 +40,7 @@ resource "aws_instance" "webserver_default" {
   count                       = length(var.azs)
   depends_on                  = [aws_subnet.public]
   instance_type               = "t2.micro"
-  subnet_id                   = element(aws_subnet.public.*.vpc_id,count.index)
+  subnet_id                   = element(aws_subnet.public.*.id,count.index)
   user_data                   = file("user_data.sh")
   root_block_device {
     volume_type     = "gp2"
@@ -48,7 +48,7 @@ resource "aws_instance" "webserver_default" {
     delete_on_termination   = true
   }
   # references security group created above
-  vpc_security_group_ids = [aws_security_group.webserver_default_ec2_security_group.vpc_id]
+  vpc_security_group_ids = [aws_security_group.webserver_default_ec2_security_group.id]
 
   tags = {
     Name = "webserver-nginx-default-instance-${count.index}"
