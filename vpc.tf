@@ -1,21 +1,21 @@
 # one vpc to hold them all, and in the cloud bind them
-resource "tls_private_key" "invideo_public_key_openssh" {
+resource "tls_private_key" "invideo_RSA_key" {
   algorithm = "RSA"
   rsa_bits    =  2048
 }
-resource "aws_key_pair" "invideo_public_key" {
-  key_name = "invideo_public_key"
-  public_key = tls_private_key.invideo_public_key_openssh.public_key_pem
+resource "aws_key_pair" "invideo_RSA_key" {
+  key_name = "invideo_pub_key"
+  public_key = tls_private_key.invideo_RSA_key.public_key_openssh
   depends_on = [
-    tls_private_key.invideo_public_key_openssh
+    tls_private_key.invideo_RSA_key
   ]
 }
 resource "local_file" "private_key" {
-  content = tls_private_key.invideo_public_key_openssh.private_key_pem
-  filename = "invideo_private_key.ppk"
+  content = tls_private_key.invideo_RSA_key.private_key_pem
+  filename = "invideo_private_key_pem.pem"
   file_permission ="0400"
   depends_on = [
-    tls_private_key.invideo_public_key_openssh
+    tls_private_key.invideo_RSA_key
   ]
 }
 
