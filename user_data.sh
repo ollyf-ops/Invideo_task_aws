@@ -30,13 +30,14 @@ mkdir -p /sunny/
 
 cd /sunny/
 
-git clone https://Shashankreddysunkara:$token@github.com/Shashankreddysunkara/Invideo_task_aws.git
+git clone https://$username:$token@github.com/$username/Invideo_task_aws.git
 
 # pull nginx image
 #docker pull nginx:latest
 cd /sunny/Invideo_task_aws/deployment/  || exit
-ansible-playbook prod-web.yml --tags=ansible-role-docker -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
-ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+ansible-playbook prod-web.yml --tags=ansible-role-docker -e "githubuser=$username" -e "githubpassword=$password"
+ansible-playbook prod-web.yml --tags=create-role -e "githubuser=$username" -e "githubpassword=$password"
+
 
 ## pull nginx-php image
 #docker pull webdevops/php-nginx:ubuntu-18.04
