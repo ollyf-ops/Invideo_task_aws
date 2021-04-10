@@ -62,13 +62,13 @@ resource "aws_subnet" "private" {
 
 # dynamic list of the public subnets created above
 data "aws_subnet_ids" "public" {
-  depends_on = ["aws_subnet.public"]
+  depends_on = [aws_subnet.public]
   vpc_id     = aws_vpc.default.id
 }
 
 # dynamic list of the private subnets created above
 data "aws_subnet_ids" "private" {
-  depends_on = ["aws_subnet.private"]
+  depends_on = [aws_subnet.private]
   vpc_id     = aws_vpc.default.id
 }
 
@@ -104,7 +104,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_eip" "default_eip" {
   count    = length(var.azs)
   vpc      = true
-  depends_on = ["aws_internet_gateway.gw"]
+  depends_on = [aws_internet_gateway.gw]
 }
 
 # create NAT Gateways
@@ -113,7 +113,7 @@ resource "aws_nat_gateway" "default" {
     count    = length(var.azs)
     allocation_id = element(aws_eip.default_eip.*.id, count.index)
     subnet_id = element(aws_subnet.public.*.id, count.index)
-    depends_on = ["aws_internet_gateway.gw"]
+    depends_on = [aws_internet_gateway.gw]
 }
 
 # for each of the private ranges, create a "private" route table.
@@ -130,7 +130,7 @@ resource "aws_route" "private_nat_gateway_route" {
   count = length(var.azs)
   route_table_id = element(aws_route_table.private.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  depends_on = ["aws_route_table.private"]
+  depends_on = [aws_route_table.private]
   nat_gateway_id = element(aws_nat_gateway.default.*.id, count.index)
 }
 
