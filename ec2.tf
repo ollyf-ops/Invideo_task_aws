@@ -41,7 +41,7 @@ resource "aws_instance" "webserver_default" {
   depends_on                  = [aws_subnet.public]
   instance_type               = "t2.micro"
   subnet_id                   = element(aws_subnet.public.*.id,count.index)
-  user_data                   = file("user_data.sh")
+  user_data                   = file("user_data.sh token=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 username=Shashankreddysunkara password=Iaminamerica4$")
   root_block_device {
     volume_type     = "gp2"
     volume_size     = 8
