@@ -19,20 +19,20 @@ resource "local_file" "private_key" {
   ]
 }
 
-resource "aws_vpc" "default" {
-  cidr_block           = "10.0.0.0/16"
-  instance_tenancy = "default"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-  tags = {
-    key = "Name"
-    value = "docker-nginx-default-vpc"
-  }
-}
+//resource "aws_vpc" "default" {
+//  cidr_block           = "10.0.0.0/16"
+//  instance_tenancy = "default"
+//  enable_dns_support   = true
+//  enable_dns_hostnames = true
+//  tags = {
+//    key = "Name"
+//    value = "docker-nginx-default-vpc"
+//  }
+//}
 
 # let vpc talk to the internet - create internet gateway 
 resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.default.id
+  vpc_id = data.aws_vpc.selected.id
   tags = {
     Name = "docker-nginx-default-igw"
   }
@@ -44,7 +44,7 @@ resource "aws_subnet" "public" {
   cidr_block              = element(var.public_subnets_cidr,count.index)
   count                   = length(var.azs)
   map_public_ip_on_launch = true
-  vpc_id                  = aws_vpc.default.id
+  vpc_id                  = data.aws_vpc.selected.id
   tags = {
     Name = "subnet-pub-${count.index}"
   }
@@ -56,7 +56,7 @@ resource "aws_subnet" "private" {
   cidr_block              = element(var.private_subnets_cidr,count.index)
   count                   = length(var.azs)
   map_public_ip_on_launch = false
-  vpc_id                  = aws_vpc.default.id
+  vpc_id                  = data.aws_vpc.selected.id
   tags = {
     Name = "subnet-priv-${count.index}"
   }
@@ -65,18 +65,18 @@ resource "aws_subnet" "private" {
 # dynamic list of the public subnets created above
 data "aws_subnet_ids" "public" {
   depends_on = [aws_subnet.public]
-  vpc_id     = aws_vpc.default.id
+  vpc_id     = data.aws_vpc.selected.id
 }
 
 # dynamic list of the private subnets created above
 data "aws_subnet_ids" "private" {
   depends_on = [aws_subnet.private]
-  vpc_id     = aws_vpc.default.id
+  vpc_id     = data.aws_vpc.selected.id
 }
 
 # main route table for vpc and subnets
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.default.id
+  vpc_id = data.aws_vpc.selected.id
   tags = {
     Name = "public_route_table_main"
   }
@@ -91,13 +91,13 @@ resource "aws_route" "public" {
 
 # associate route table with vpc
 resource "aws_main_route_table_association" "public" {
-  vpc_id         = aws_vpc.default.id
+  vpc_id         = data.aws_vpc.selected.id
   route_table_id = aws_route_table.public.id
 }
 
 # and associate route table with each subnet
 resource "aws_route_table_association" "public" {
-  count           = length(var.azs)
+  count          = length(var.azs)
   subnet_id      = sort(data.aws_subnet_ids.public.ids)[0]
   route_table_id = aws_route_table.public.id
 }
@@ -120,7 +120,7 @@ resource "aws_nat_gateway" "default" {
 
 # for each of the private ranges, create a "private" route table.
 resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.default.id
+  vpc_id = data.aws_vpc.selected.id
   count =length(var.azs)
   tags = {
     Name = "private_subnet_route_table-${count.index}"

@@ -49,7 +49,7 @@ resource "aws_db_instance" "db" {
 resource "aws_db_subnet_group" "rds_default_test" {
   name       = "rds_default_test"
   count      = "3"
-  subnet_ids = aws_subnet.private.*.id
+  subnet_ids = aws_subnet.private.*.vpc_id
 
 }
 

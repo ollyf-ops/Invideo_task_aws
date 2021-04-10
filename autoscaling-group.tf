@@ -2,7 +2,7 @@
 resource "aws_launch_configuration" "default" {
   image_id               = lookup(var.ec2_amis, var.aws_region)
   instance_type          = "t2.micro"
-  security_groups        = [aws_security_group.webserver_default_ec2_security_group.id]
+  security_groups        = [aws_security_group.webserver_default_ec2_security_group.vpc_id]
   user_data              = file("user_data.sh")
   lifecycle {
     create_before_destroy = true
@@ -20,7 +20,7 @@ resource "aws_autoscaling_group" "default" {
   #load_balancers = aws_alb.docker_default_alb.name]
 
   #availability_zones       = "[${var.azs.*}]"
-  vpc_zone_identifier       = aws_subnet.private.*.id
+  vpc_zone_identifier       = aws_subnet.private.*.vpc_id
 
   desired_capacity = 3
   max_size = 6
@@ -29,7 +29,7 @@ resource "aws_autoscaling_group" "default" {
   health_check_type = "ELB"
   tag {
     key = "Name"
-    value = "docker-default-asg"
+    value = "webserver-default-asg"
     propagate_at_launch = true
   }
 }
