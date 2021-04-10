@@ -34,7 +34,7 @@ resource "aws_alb" "webserver_default_alb" {
 
 # alb target group
 resource "aws_alb_target_group" "webserver-default-tg" {
-  name     = "webserver-default-alb-target-group"
+  name     = "webserver-alb-target-group"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
