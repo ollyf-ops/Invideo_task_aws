@@ -1,8 +1,8 @@
 # security group for application load balancer
-resource "aws_security_group" "docker_demo_alb_sg" {
-  name        = "docker-nginx-demo-alb-sg"
+resource "aws_security_group" "docker_default_alb_sg" {
+  name        = "docker-nginx-default-alb-sg"
   description = "allow incoming HTTP traffic only"
-  vpc_id      = aws_vpc.demo.id
+  vpc_id      = aws_vpc.default.id
 
   ingress {
     protocol    = "tcp"
@@ -17,27 +17,27 @@ resource "aws_security_group" "docker_demo_alb_sg" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
-//  tags {
-//    Name = "alb-security-group-docker-demo"
-//  }
+  tags = {
+    Name = "alb-security-group-docker-default"
+  }
 }
 
 # using ALB - instances in private subnets
-resource "aws_alb" "docker_demo_alb" {
-  name                      = "docker-demo-alb"
-  security_groups           = [aws_security_group.docker_demo_alb_sg.id]
+resource "aws_alb" "docker_default_alb" {
+  name                      = "docker-default-alb"
+  security_groups           = [aws_security_group.docker_default_alb_sg.id]
   subnets                   = aws_subnet.private.*.id
-//  tags {
-//    Name = "docker-demo-alb"
-//  }
+  tags = {
+    Name = "docker-default-alb"
+  }
 }
 
 # alb target group
-resource "aws_alb_target_group" "docker-demo-tg" {
-  name     = "docker-demo-alb-target-group"
+resource "aws_alb_target_group" "docker-default-tg" {
+  name     = "docker-default-alb-target-group"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = aws_vpc.demo.id
+  vpc_id   = aws_vpc.default.id
   health_check {
     path = "/"
     port = 80
@@ -46,21 +46,21 @@ resource "aws_alb_target_group" "docker-demo-tg" {
 
 # listener
 resource "aws_alb_listener" "http_listener" {
-  load_balancer_arn = aws_alb.docker_demo_alb.arn
+  load_balancer_arn = aws_alb.docker_default_alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.docker-demo-tg.arn
+    target_group_arn = aws_alb_target_group.docker-default-tg.arn
     type             = "forward"
   }
 }
 
 # target group attach
 # using nested interpolation functions and the count parameter to the "aws_alb_target_group_attachment"
-resource "aws_lb_target_group_attachment" "docker-demo" {
+resource "aws_lb_target_group_attachment" "docker-default" {
   count            = length(var.azs)
-  target_group_arn = aws_alb_target_group.docker-demo-tg.arn
-  target_id        =  element(split(",", join(",", aws_instance.docker_demo.*.id)), count.index)
+  target_group_arn = aws_alb_target_group.docker-default-tg.arn
+  target_id        = element(split(",", join(",", aws_instance.docker_default.*.id)), count.index)
   port             = 80
 }

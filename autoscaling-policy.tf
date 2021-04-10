@@ -11,18 +11,18 @@
 
 
 # scale up alarm
-resource "aws_autoscaling_policy" "demo-cpu-policy" {
-	name = "demo-cpu-policy"
-	autoscaling_group_name = aws_autoscaling_group.demo.name
+resource "aws_autoscaling_policy" "default-cpu-policy" {
+	name = "default-cpu-policy"
+	autoscaling_group_name = aws_autoscaling_group.default.name
 	adjustment_type = "ChangeInCapacity"
 	scaling_adjustment = "1"
 	cooldown = "300"
 	policy_type = "SimpleScaling"
 }
 
-resource "aws_cloudwatch_metric_alarm" "demo-cpu-alarm" {
-	alarm_name = "demo-cpu-alarm"
-	alarm_description = "demo-cpu-alarm"
+resource "aws_cloudwatch_metric_alarm" "default-cpu-alarm" {
+	alarm_name = "default-cpu-alarm"
+	alarm_description = "default-cpu-alarm"
 	comparison_operator = "GreaterThanOrEqualToThreshold"
 	evaluation_periods = "2"
 	metric_name = "CPUUtilization"
@@ -31,26 +31,26 @@ resource "aws_cloudwatch_metric_alarm" "demo-cpu-alarm" {
 	statistic = "Average"
 	threshold = "60"   
 	dimensions = {
-		"AutoScalingGroupName" = aws_autoscaling_group.demo.name
+		"AutoScalingGroupName" = aws_autoscaling_group.default.name
 	}
 	actions_enabled = true
-	alarm_actions = [aws_autoscaling_policy.demo-cpu-policy.arn]
+	alarm_actions = [aws_autoscaling_policy.default-cpu-policy.arn]
 }
 
 
 # scale down alarm
-resource "aws_autoscaling_policy" "demo-cpu-policy-scaledown" {
-	name = "demo-cpu-policy-scaledown"
-	autoscaling_group_name = aws_autoscaling_group.demo.name
+resource "aws_autoscaling_policy" "default-cpu-policy-scaledown" {
+	name = "default-cpu-policy-scaledown"
+	autoscaling_group_name = aws_autoscaling_group.default.name
 	adjustment_type = "ChangeInCapacity"
 	scaling_adjustment = "-1"
 	cooldown = "300"
 	policy_type = "SimpleScaling"
 }
 
-resource "aws_cloudwatch_metric_alarm" "demo-cpu-alarm-scaledown" {
-	alarm_name = "demo-cpu-alarm-scaledown"
-	alarm_description = "demo-cpu-alarm-scaledown"
+resource "aws_cloudwatch_metric_alarm" "default-cpu-alarm-scaledown" {
+	alarm_name = "default-cpu-alarm-scaledown"
+	alarm_description = "default-cpu-alarm-scaledown"
 	comparison_operator = "LessThanOrEqualToThreshold"
 	evaluation_periods = "2"
 	metric_name = "CPUUtilization"
@@ -59,8 +59,8 @@ resource "aws_cloudwatch_metric_alarm" "demo-cpu-alarm-scaledown" {
 	statistic = "Average"
 	threshold = "50"
 	dimensions = {
-		"AutoScalingGroupName" = aws_autoscaling_group.demo.name
+		"AutoScalingGroupName" = aws_autoscaling_group.default.name
 	}
 	actions_enabled = true
-	alarm_actions = [aws_autoscaling_policy.demo-cpu-policy-scaledown.arn]
+	alarm_actions = [aws_autoscaling_policy.default-cpu-policy-scaledown.arn]
 }

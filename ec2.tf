@@ -1,8 +1,8 @@
 # security group for EC2 instances
-resource "aws_security_group" "docker_demo_ec2_security_group" {
-  name        = "docker-nginx-demo-ec2"
+resource "aws_security_group" "docker_default_ec2_security_group" {
+  name        = "docker-nginx-default-ec2"
   description = "allow incoming HTTP traffic only"
-  vpc_id      = aws_vpc.demo.id
+  vpc_id      = aws_vpc.default.id
 
   ingress {
     description = "SSH"
@@ -26,25 +26,26 @@ resource "aws_security_group" "docker_demo_ec2_security_group" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
-//  tags {
-//    Name = "docker_demo_ec2_security_group"
-//  }
+  tags = {
+    Name = "docker_default_ec2_security_group"
+  }
 }
 
 # EC2 instances, one per availability zone
-resource "aws_instance" "docker_demo" {
+resource "aws_instance" "docker_default" {
   ami                         = lookup(var.ec2_amis, var.aws_region)
   associate_public_ip_address = false
   count                       = length(var.azs)
-  depends_on                  = [aws_subnet.private]
+  depends_on                  = [aws_subnet.public]
+
   instance_type               = "t2.micro"
-  subnet_id                   = element(aws_subnet.private.*.id,count.index)
+  subnet_id                   = element(aws_subnet.public.*.id,count.index)
   user_data                   = file("user_data.sh")
 
   # references security group created above
-  vpc_security_group_ids = [aws_security_group.docker_demo_ec2_security_group.id]
+  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
 
-//  tags {
-//    Name = "docker-nginx-demo-instance-${count.index
-//  }
+  tags = {
+    Name = "docker-nginx-default-instance-${count.index}"
+  }
 }

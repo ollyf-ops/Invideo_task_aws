@@ -1,7 +1,7 @@
-resource "aws_security_group" "rds_invideo_security_group" {
-  name        = "rds_invideo_security_group"
-  description = "rds invideo security group"
-  vpc_id      = aws_vpc.demo.id
+resource "aws_security_group" "rds_default_security_group" {
+  name        = "rds_default_security_group"
+  description = "rds default security group"
+  vpc_id      = aws_vpc.default.id
 
   ingress {
     from_port   = 5432
@@ -17,9 +17,9 @@ resource "aws_security_group" "rds_invideo_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-//  tags {
-//    Name = "rds_security_group"
-//  }
+  tags = {
+    Name = "rds_default_security_group"
+  }
 }
 
 resource "aws_db_instance" "db" {
@@ -32,21 +32,21 @@ resource "aws_db_instance" "db" {
   username          = var.rds_admin_user
   password          = var.rds_admin_password
   publicly_accessible    = var.rds_publicly_accessible
-  vpc_security_group_ids = [aws_security_group.rds_invideo_security_group.id]
-//  vpc_security_group_ids = [aws_security_group.docker_demo_ec2_security_group.id]
-  final_snapshot_identifier = "invideo-db-backup"
+  vpc_security_group_ids = [aws_security_group.rds_default_security_group.id]
+//  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
+  final_snapshot_identifier = "rds-db-backup"
   skip_final_snapshot       = true
 
   # commented : if there is no default subnet, this will give us an error
   #db_subnet_group_name   = "rds_test"
 
-//  tags {
-//    Name = Postgres Database in var.aws_region
-//  }
+  tags = {
+    Name = "Postgres Database in var.aws_region"
+  }
 }
 
-resource "aws_db_subnet_group" "rds_invideo_test" {
-  name       = "rds_invideo_test"
+resource "aws_db_subnet_group" "rds_default_test" {
+  name       = "rds_default_test"
   count      = "3"
   subnet_ids = aws_subnet.private.*.id
 
