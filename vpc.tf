@@ -32,7 +32,7 @@ resource "local_file" "private_key" {
 
 # let vpc talk to the internet - create internet gateway 
 resource "aws_internet_gateway" "gw" {
-  vpc_id = data.aws_vpc.selected.id
+  vpc_id = local.vpc_id
   tags = {
     Name = "docker-nginx-default-igw"
   }
@@ -44,7 +44,7 @@ resource "aws_subnet" "public" {
   cidr_block              = element(var.public_subnets_cidr,count.index)
   count                   = length(var.azs)
   map_public_ip_on_launch = true
-  vpc_id                  = data.aws_vpc.selected.id
+  vpc_id                  = local.vpc_id
   tags = {
     Name = "subnet-pub-${count.index}"
   }
@@ -56,7 +56,7 @@ resource "aws_subnet" "private" {
   cidr_block              = element(var.private_subnets_cidr,count.index)
   count                   = length(var.azs)
   map_public_ip_on_launch = false
-  vpc_id                  = data.aws_vpc.selected.id
+  vpc_id                  = local.vpc_id
   tags = {
     Name = "subnet-priv-${count.index}"
   }
@@ -65,18 +65,18 @@ resource "aws_subnet" "private" {
 # dynamic list of the public subnets created above
 data "aws_subnet_ids" "public" {
   depends_on = [aws_subnet.public]
-  vpc_id     = data.aws_vpc.selected.id
+  vpc_id     = local.vpc_id
 }
 
 # dynamic list of the private subnets created above
 data "aws_subnet_ids" "private" {
   depends_on = [aws_subnet.private]
-  vpc_id     = data.aws_vpc.selected.id
+  vpc_id     = local.vpc_id
 }
 
 # main route table for vpc and subnets
 resource "aws_route_table" "public" {
-  vpc_id = data.aws_vpc.selected.id
+  vpc_id = local.vpc_id
   tags = {
     Name = "public_route_table_main"
   }
@@ -120,7 +120,7 @@ resource "aws_nat_gateway" "default" {
 
 # for each of the private ranges, create a "private" route table.
 resource "aws_route_table" "private" {
-  vpc_id = data.aws_vpc.selected.id
+  vpc_id = local.vpc_id
   count =length(var.azs)
   tags = {
     Name = "private_subnet_route_table-${count.index}"
