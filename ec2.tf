@@ -55,39 +55,40 @@ resource "aws_instance" "webserver_default" {
   }
 }
 
-resource "aws_ebs_volume" "document_root" {
-  availability_zone = length(var.azs)
-  size              = 1
-  type = "gp2"
-  tags = {
-    Name = "ebs_document_root"
-  }
-}
-resource "aws_volume_attachment" "document_root_mount" {
-  device_name = "/dev/xvdb"
-  volume_id   = aws_ebs_volume.document_root.id
-  instance_id = aws_instance.webserver_default.id
-  connection {
-    type    = "ssh"
-    user    = "ubuntu"
-    host    = aws_instance.webserver_default.public_ip
-    port    = 22
-    private_key = tls_private_key.invideo_private_key.private_key_pem
-  }
-  provisioner "remote-exec" {
-    inline  = [
-      "sudo mkfs.ext4 /dev/xvdb",
-      "sudo mount /dev/xvdb /var/www/html",
-      "sudo git clone https://github.com/devil-test/webserver-test.git /temp_repo",
-      "sudo cp -rf /temp_repo/* /var/www/html",
-      "sudo rm -rf /temp_repo",
-      "sudo setenforce 0"
-    ]
-  }
-  provisioner "remote-exec" {
-    when    = destroy
-    inline  = [
-      "sudo umount /var/www/html"
-    ]
-  }
-}
+//resource "aws_ebs_volume" "document_root" {
+//  availability_zone = length(var.azs)
+//  size              = 1
+//  type = "gp2"
+//  tags = {
+//    Name = "ebs_document_root"
+//  }
+//}
+
+//resource "aws_volume_attachment" "document_root_mount" {
+//  device_name = "/dev/xvdb"
+//  volume_id   = aws_instance.webserver_default.root_block_device.id
+//  instance_id = aws_instance.webserver_default.id
+//  connection {
+//    type    = "ssh"
+//    user    = "ubuntu"
+//    host    = aws_instance.webserver_default.public_ip
+//    port    = 22
+//    private_key = tls_private_key.invideo_private_key.private_key_pem
+//  }
+//  provisioner "remote-exec" {
+//    inline  = [
+//      "sudo mkfs.ext4 /dev/xvdb",
+//      "sudo mount /dev/xvdb /var/www/html",
+//      "sudo git clone https://github.com/devil-test/webserver-test.git /temp_repo",
+//      "sudo cp -rf /temp_repo/* /var/www/html",
+//      "sudo rm -rf /temp_repo",
+//      "sudo setenforce 0"
+//    ]
+//  }
+//  provisioner "remote-exec" {
+//    when    = destroy
+//    inline  = [
+//      "sudo umount /var/www/html"
+//    ]
+//  }
+//}
