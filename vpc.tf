@@ -4,7 +4,7 @@ resource "tls_private_key" "invideo_RSA_key" {
   rsa_bits    =  2048
 }
 resource "aws_key_pair" "invideo_RSA_key" {
-  key_name = "invideo_pub_key"
+  key_name = "invideo_key"
   public_key = tls_private_key.invideo_RSA_key.public_key_openssh
   depends_on = [
     tls_private_key.invideo_RSA_key
