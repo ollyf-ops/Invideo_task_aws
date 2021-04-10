@@ -27,7 +27,7 @@ resource "aws_autoscaling_group" "default" {
   min_size = 1
 
   health_check_type = "ELB"
-  tag = {
+  tag {
     key = "Name"
     value = "docker-default-asg"
     propagate_at_launch = true
