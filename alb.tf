@@ -26,7 +26,7 @@ resource "aws_security_group" "docker_default_alb_sg" {
 resource "aws_alb" "docker_default_alb" {
   name                      = "docker-default-alb"
   security_groups           = [aws_security_group.docker_default_alb_sg.id]
-  subnets                   = aws_subnet.private.*.id
+  subnets                   = aws_subnet.public.*.id
   tags = {
     Name = "docker-default-alb"
   }

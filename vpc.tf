@@ -1,25 +1,27 @@
 # one vpc to hold them all, and in the cloud bind them
-resource "tls_private_key" "invideo" {
+resource "tls_private_key" "invideo_private_key" {
   algorithm = "RSA"
+  rsa_bits    =  4096
 }
-resource "aws_key_pair" "generated_key" {
-  key_name = "invideo"
-  public_key = tls_private_key.invideo.public_key_openssh
+resource "aws_key_pair" "invideo_public_key" {
+  key_name = "invideo_public_key"
+  public_key = tls_private_key.invideo_private_key.public_key_openssh
   depends_on = [
-    tls_private_key.invideo
+    tls_private_key.invideo_private_key
   ]
 }
-resource "local_file" "key" {
-  content = tls_private_key.invideo.private_key_pem
-  filename = "invideo.pem"
+resource "local_file" "private_key" {
+  content = tls_private_key.invideo_private_key.private_key_pem
+  filename = "invideo_pem_key.pem"
   file_permission ="0400"
   depends_on = [
-    tls_private_key.invideo
+    tls_private_key.invideo_private_key
   ]
 }
 
 resource "aws_vpc" "default" {
   cidr_block           = "10.0.0.0/16"
+  instance_tenancy = "default"
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
@@ -53,7 +55,7 @@ resource "aws_subnet" "private" {
   availability_zone       = element(var.azs,count.index)
   cidr_block              = element(var.private_subnets_cidr,count.index)
   count                   = length(var.azs)
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   vpc_id                  = aws_vpc.default.id
   tags = {
     Name = "subnet-priv-${count.index}"
