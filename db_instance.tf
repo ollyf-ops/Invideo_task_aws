@@ -1,7 +1,7 @@
 resource "aws_security_group" "rds_default_security_group" {
   name        = "rds_default_security_group"
   description = "rds default security group"
-//  vpc_id      = aws_vpc.default.id
+#  vpc_id      = aws_vpc.default.id
    vpc_id     = local.vpc_id
 
   ingress {
@@ -34,7 +34,7 @@ resource "aws_db_instance" "db" {
   password          = var.rds_admin_password
   publicly_accessible    = var.rds_publicly_accessible
   vpc_security_group_ids = [aws_security_group.rds_default_security_group.id]
-//  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
+#  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
   final_snapshot_identifier = "rds-db-backup"
   skip_final_snapshot       = true
 

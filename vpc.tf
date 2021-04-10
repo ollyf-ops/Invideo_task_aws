@@ -19,16 +19,16 @@ resource "local_file" "private_key" {
   ]
 }
 
-//resource "aws_vpc" "default" {
-//  cidr_block           = "10.0.0.0/16"
-//  instance_tenancy = "default"
-//  enable_dns_support   = true
-//  enable_dns_hostnames = true
-//  tags = {
-//    key = "Name"
-//    value = "docker-nginx-default-vpc"
-//  }
-//}
+#resource "aws_vpc" "default" {
+#  cidr_block           = "10.0.0.0/16"
+#  instance_tenancy = "default"
+#  enable_dns_support   = true
+#  enable_dns_hostnames = true
+#  tags = {
+#    key = "Name"
+#    value = "docker-nginx-default-vpc"
+#  }
+#}
 
 # let vpc talk to the internet - create internet gateway 
 resource "aws_internet_gateway" "gw" {
