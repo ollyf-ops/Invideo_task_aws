@@ -2,7 +2,7 @@
 resource "aws_security_group" "docker_default_alb_sg" {
   name        = "docker-nginx-default-alb-sg"
   description = "allow incoming HTTP traffic only"
-  vpc_id      = aws_vpc.default.id
+  vpc_id      = local.vpc_id
 
   ingress {
     protocol    = "tcp"
@@ -37,7 +37,7 @@ resource "aws_alb_target_group" "docker-default-tg" {
   name     = "docker-default-alb-target-group"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = aws_vpc.default.id
+  vpc_id   = local.vpc_id
   health_check {
     path = "/"
     port = 80
