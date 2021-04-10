@@ -26,9 +26,15 @@ echo -e " " | sudo apt-add-repository ppa:ansible/ansible
 
 sudo apt install ansible
 
+mkdir -p /sunny/
+
+cd /sunny/
+
+git clone https://Shashankreddysunkara:$token@github.com/Shashankreddysunkara/Invideo_task_aws.git
+
 # pull nginx image
 #docker pull nginx:latest
-cd ./deployment/  || exit
+cd /sunny/Invideo_task_aws/deployment/  || exit
 ansible-playbook prod-web.yml --tags=ansible-role-docker -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
 ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
 

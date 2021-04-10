@@ -35,7 +35,7 @@ resource "aws_security_group" "webserver_default_ec2_security_group" {
 # EC2 instances, one per availability zone
 resource "aws_instance" "webserver_default" {
   ami                         = lookup(var.ec2_amis, var.aws_region)
-  key_name                    = aws_key_pair.invideo_public_key.key_name
+  key_name                    = aws_key_pair.invideo_RSA_key.key_name
   associate_public_ip_address = false
   count                       = length(var.azs)
   depends_on                  = [aws_subnet.public]
