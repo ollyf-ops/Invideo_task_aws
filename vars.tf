@@ -28,7 +28,7 @@ variable "vpc_cidr" {
 }
 
 variable "ec2_amis" {
-  description = "Ubuntu Server 18.04 LTS (HVM)"
+  description = "Ubuntu Server 18.04 LTS (HVM) with wordpress"
   type        = map
 
   default = {
@@ -38,12 +38,12 @@ variable "ec2_amis" {
 
 variable "public_subnets_cidr" {
   type = list
-  default = ["172.31.80.0/20", "172.31.82.0/20", "172.31.84.0/20"]
+  default = ["172.31.0.0/24", "172.31.2.0/24", "172.31.4.0/24"]
 }
 
 variable "private_subnets_cidr" {
   type = list
-  default = ["172.31.81.0/20", "172.31.83.0/20", "172.31.85.0/20"]
+  default = ["172.31.1.0/24", "172.31.3.0/24", "172.31.5.0/24"]
 }
 
 variable "ec2_publicly_accessible" {
