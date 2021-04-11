@@ -35,3 +35,8 @@ variable "rds_admin_password" {
 variable "rds_publicly_accessible" {
   default = "false"
 }
+
+variable "multi_az" {
+  default     = false
+  description = "Muti-az allowed?"
+}

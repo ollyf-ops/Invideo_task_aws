@@ -37,7 +37,7 @@ resource "aws_db_instance" "db" {
 #  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
   final_snapshot_identifier = "rds-db-backup"
   skip_final_snapshot       = true
-  availability_zone = var.azs
+  multi_az               = var.multi_az
 
   # commented : if there is no default subnet, this will give us an error
   #db_subnet_group_name   = "rds_test"
