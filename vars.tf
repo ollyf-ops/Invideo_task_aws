@@ -32,7 +32,7 @@ variable "ec2_amis" {
   type        = map
 
   default = {
-    "us-east-1" = "ami-0478565e56d954357"
+    "us-east-1" = "ami-013f17f36f8b1fefb"
   }
 }
 
