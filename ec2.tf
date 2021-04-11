@@ -21,6 +21,14 @@ resource "aws_security_group" "webserver_default_ec2_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "HTTPs"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     protocol    = "-1"
     from_port   = 0
@@ -36,7 +44,7 @@ resource "aws_security_group" "webserver_default_ec2_security_group" {
 resource "aws_instance" "webserver_default" {
   ami                         = lookup(var.ec2_amis, var.aws_region)
   key_name                    = aws_key_pair.invideo_RSA_key.key_name
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   count                       = length(var.azs)
   depends_on                  = [aws_subnet.public]
   instance_type               = "t2.micro"

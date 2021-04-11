@@ -47,5 +47,5 @@ variable "private_subnets_cidr" {
 }
 
 variable "ec2_publicly_accessible" {
-  default = "false"
+  default = "true"
 }
