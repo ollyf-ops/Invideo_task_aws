@@ -39,7 +39,6 @@ resource "aws_db_instance" "db" {
   final_snapshot_identifier = "rds-db-backup"
   skip_final_snapshot       = true
   multi_az               = var.multi_az
-  availability_zone = aws_db_instance.db.availability_zone
 
   # commented : if there is no default subnet, this will give us an error
   #db_subnet_group_name   = "rds_test"
