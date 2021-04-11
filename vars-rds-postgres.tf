@@ -40,3 +40,7 @@ variable "multi_az" {
   default     = true
   description = "Muti-az allowed?"
 }
+
+variable "environment" {
+  default = "dev"
+}

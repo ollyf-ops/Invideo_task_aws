@@ -33,7 +33,7 @@ resource "aws_db_instance" "db" {
   username          = var.rds_admin_user
   password          = var.rds_admin_password
   publicly_accessible    = var.rds_publicly_accessible
-  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
+  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group[count.index].name
   vpc_security_group_ids = [aws_security_group.rds_default_security_group.id]
 #  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
   final_snapshot_identifier = "rds-db-backup"
@@ -49,11 +49,20 @@ resource "aws_db_instance" "db" {
   }
 }
 
-resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds_subnet_group-${count.index}"
-  count      = length(var.azs)
-  subnet_ids = aws_subnet.private.*.id
+//resource "aws_db_subnet_group" "rds_subnet_group" {
+//  name       = "rds_subnet_group-${count.index}"
+//  count      = length(var.azs)
+//  subnet_ids = aws_subnet.private.*.id
+//
+//}
 
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name        = "${var.environment}-rds-subnet-group"
+  description = "RDS subnet group"
+  subnet_ids  = aws_subnet.private.*.id
+  tags {
+    Environment = "${var.environment}"
+  }
 }
 
 output "postgress-address" {
