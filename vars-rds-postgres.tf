@@ -37,6 +37,6 @@ variable "rds_publicly_accessible" {
 }
 
 variable "multi_az" {
-  default     = false
+  default     = true
   description = "Muti-az allowed?"
 }
