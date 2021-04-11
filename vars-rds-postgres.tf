@@ -5,7 +5,7 @@ variable "rds_identifier" {
 }
 
 variable "rds_instance_type" {
-  default = "db.m5.large"
+  default = "db.t2.micro"
 }
 
 variable "rds_storage_size" {
@@ -37,6 +37,6 @@ variable "rds_publicly_accessible" {
 }
 
 variable "multi_az" {
-  default     = true
+  default     = false
   description = "Muti-az allowed?"
 }
