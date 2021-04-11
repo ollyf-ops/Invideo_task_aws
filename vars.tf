@@ -9,8 +9,8 @@ variable "aws_secret_key" {
 }
 
 variable "aws_region" {
-  description = "US East (Ohio)"
-  default     = "us-east-2"
+  description = "US EAST Virginia"
+  default     = "us-east-1"
 }
 
 # dynamically retrieves all availability zones for current region
@@ -20,7 +20,7 @@ variable "aws_region" {
 #   comment off this "azs" to retrive all AZs dynamically (uncomment the line above "data ...")
 variable "azs" {
   type = list
-  default = ["us-east-2a", "us-east-2b", "us-east-3c"]
+  default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
 variable "vpc_cidr" {
@@ -32,7 +32,7 @@ variable "ec2_amis" {
   type        = map
 
   default = {
-    "us-east-2" = "ami-0075badd6a3774a86"
+    "us-east-1" = "ami-0b6ed4dfa25917eb2"
   }
 }
 
@@ -47,5 +47,5 @@ variable "private_subnets_cidr" {
 }
 
 variable "ec2_publicly_accessible" {
-  default = "true"
+  default = "false"
 }
