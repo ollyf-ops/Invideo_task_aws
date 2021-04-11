@@ -38,12 +38,12 @@ variable "ec2_amis" {
 
 variable "public_subnets_cidr" {
   type = list
-  default = ["172.31.0.0/24", "172.31.2.0/24", "172.31.4.0/24"]
+  default = ["172.31.16.0/20", "172.31.48.0/20", "172.31.80.0/20"]
 }
 
 variable "private_subnets_cidr" {
   type = list
-  default = ["172.31.1.0/24", "172.31.3.0/24", "172.31.5.0/24"]
+  default = ["172.31.32.0/20", "172.31.64.0/20", "172.31.96.0/20"]
 }
 
 variable "ec2_publicly_accessible" {
