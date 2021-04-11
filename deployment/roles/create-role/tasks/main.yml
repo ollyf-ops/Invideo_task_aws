@@ -1,3 +1,6 @@
+- name: build the Docker image
+  shell: mkdir -p /sunny
+
 - name: Get stuff from git
   git:
     repo: "https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git"
