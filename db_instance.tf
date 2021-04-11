@@ -33,11 +33,13 @@ resource "aws_db_instance" "db" {
   username          = var.rds_admin_user
   password          = var.rds_admin_password
   publicly_accessible    = var.rds_publicly_accessible
+  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.id
   vpc_security_group_ids = [aws_security_group.rds_default_security_group.id]
 #  vpc_security_group_ids = [aws_security_group.docker_default_ec2_security_group.id]
   final_snapshot_identifier = "rds-db-backup"
   skip_final_snapshot       = true
   multi_az               = var.multi_az
+  availability_zone = var.azs
 
   # commented : if there is no default subnet, this will give us an error
   #db_subnet_group_name   = "rds_test"
