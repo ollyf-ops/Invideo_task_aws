@@ -50,7 +50,7 @@ resource "aws_db_instance" "db" {
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rds_subnet_group-${count.index}"
   count      = length(var.azs)
-  subnet_ids = ["${aws_subnet.private.*.id}"]
+  subnet_ids = element(split(",", join(",", aws_subnet.private.*.id)), count.index)
 
 }
 
