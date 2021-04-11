@@ -38,9 +38,9 @@ resource "aws_instance" "webserver_default" {
   key_name                    = aws_key_pair.invideo_RSA_key.key_name
   associate_public_ip_address = false
   count                       = length(var.azs)
-  depends_on                  = [aws_subnet.public]
+  depends_on                  = [aws_subnet.private]
   instance_type               = "t2.micro"
-  subnet_id                   = element(aws_subnet.public.*.id,count.index)
+  subnet_id                   = element(aws_subnet.private.*.id,count.index)
   user_data                   = file("user_data.sh")
   root_block_device {
     volume_type     = "gp2"
