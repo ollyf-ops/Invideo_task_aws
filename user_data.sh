@@ -28,13 +28,17 @@ sudo apt install ansible -y
 
 mkdir -p /sunny/
 
-cd /sunny/
+cd /sunny/ || return
+
+git clone https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git
 
 # pull nginx image
 #docker pull nginx:latest
-ansible-playbook prod-web.yml --tags=ansible-role-docker
-ansible-playbook prod-web.yml --tags=create-role
+cd /sunny/Invideo_task_aws/deployment/ || return
 
+ansible-playbook prod-web.yml --tags=docker-role
+
+ansible-playbook prod-web.yml --tags=create-role
 
 ## pull nginx-php image
 #docker pull webdevops/php-nginx:ubuntu-18.04

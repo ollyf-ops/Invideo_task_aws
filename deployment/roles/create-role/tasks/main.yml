@@ -1,5 +1,5 @@
-- name: build the Docker image
-  shell: mkdir -p /sunny
+#- name: create directory
+#  shell: mkdir -p /sunny
 
 - name: Get stuff from git
   git:
@@ -9,7 +9,7 @@
     version: main
 
 
-- name: build the Docker image
+- name: Pull the Docker image
   shell: | 
           cd /sunny
           echo "# pull nginx-php image"
