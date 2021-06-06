@@ -14,5 +14,7 @@ jobs:
         id: ansible
         run: |
           cd ./deployment/
-          ansible-playbook prod-web.yml --tags=docker-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
-          ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+#          ansible-playbook prod-web.yml --tags=docker-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+#          ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+           ansible-playbook prod-web.yml --tags=docker-role
+           ansible-playbook prod-web.yml --tags=create-role
