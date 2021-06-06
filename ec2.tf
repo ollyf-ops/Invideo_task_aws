@@ -22,7 +22,7 @@ resource "aws_security_group" "webserver_default_ec2_security_group" {
   }
 
   egress {
-    protocol    = "-1"
+    protocol    = "all"
     from_port   = 0
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
@@ -43,8 +43,8 @@ resource "aws_instance" "webserver_default" {
   subnet_id                   = element(aws_subnet.private.*.id,count.index)
   user_data                   = file("user_data.sh")
   root_block_device {
-    volume_type     = "gp2"
-    volume_size     = 8
+    volume_type     = "gp3"
+    volume_size     = 30
     delete_on_termination   = true
   }
   # references security group created above
@@ -55,40 +55,41 @@ resource "aws_instance" "webserver_default" {
   }
 }
 
-/*resource "aws_ebs_volume" "document_root" {
-  availability_zone = length(var.azs)
-  size              = 1
-  type = "gp2"
-  tags = {
-    Name = "ebs_document_root"
-  }
-}*/
-
-/*resource "aws_volume_attachment" "document_root_mount" {
-  device_name = "/dev/xvdb"
-  volume_id   = aws_instance.webserver_default.root_block_device.id
-  instance_id = aws_instance.webserver_default.id
-  connection {
-    type    = "ssh"
-    user    = "ubuntu"
-    host    = aws_instance.webserver_default.public_ip
-    port    = 22
-    private_key = tls_private_key.invideo_private_key.private_key_pem
-  }
-  provisioner "remote-exec" {
-    inline  = [
-      "sudo mkfs.ext4 /dev/xvdb",
-      "sudo mount /dev/xvdb /var/www/html",
-      "sudo git clone https://github.com/devil-test/webserver-test.git /temp_repo",
-      "sudo cp -rf /temp_repo/* /var/www/html",
-      "sudo rm -rf /temp_repo",
-      "sudo setenforce 0"
-    ]
-  }
-  provisioner "remote-exec" {
-    when    = destroy
-    inline  = [
-      "sudo umount /var/www/html"
-    ]
-  }
-}*/
+//resource "aws_ebs_volume" "document_root" {
+//  availability_zone = length(var.azs)
+//  size              = 1
+//  type = "gp2"
+//  tags = {
+//    Name = "ebs_document_root"
+//  }
+//}
+//
+//resource "aws_volume_attachment" "document_root_mount" {
+//  device_name = "/dev/xvdb"
+//  volume_id   = aws_instance.webserver_default.root_block_device.id
+//  instance_id = aws_instance.webserver_default.id
+//  connection {
+//    type    = "ssh"
+//    user    = "ec2-user"
+//    host    = aws_instance.webserver_default.public_ip
+//    port    = 22
+//    private_key = tls_private_key.invideo_RSA_key.private_key_pem
+//  }
+//
+//  provisioner "remote-exec" {
+//    inline  = [
+//      "sudo mkfs.ext4 /dev/xvdb",
+//      "sudo mount /dev/xvdb /var/www/html",
+//      "sudo git clone https://github.com/devil-test/webserver-test.git /temp_repo",
+//      "sudo cp -rf /temp_repo/* /var/www/html",
+//      "sudo rm -rf /temp_repo",
+//      "sudo setenforce 0"
+//    ]
+//  }
+//  provisioner "remote-exec" {
+//    when    = destroy
+//    inline  = [
+//      "sudo umount /var/www/html"
+//    ]
+//  }
+//}

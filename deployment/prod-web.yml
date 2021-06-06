@@ -1,6 +1,6 @@
 ---
-- hosts: prod-web
-  remote_user: ubuntu
+- hosts: tag_Name_webserver-nginx-default-instance-${count.index}
+  remote_user: ec2-user
   become: true
   roles:
     - {role: ansible-role-docker, tags: [ 'docker-role' ]}
