@@ -1,75 +1,23 @@
----
-- name: Deploying HTTPD Servers
-  hosts: tag_Name_wordpress
-  vars_files:
-    - vars.yml
-  tasks:
-    - name: Install Packages
-      yum:
-        name:
-          - "httpd"
-          - "php-mysqlnd"
-          - "php-fpm"
-          - "mariadb-server"
-          - "php-json"
-          - "firewalld"
-        state: present
+#- name: create directory
+#  shell: mkdir -p /sunny
 
-    - name:
-      get_url:
-        url: "{{ url_var }}"
-        dest: "/root/"
+- name: Get stuff from git
+  git:
+    repo: "https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git"
+    dest: /sunny
+    update: yes
+    version: main
 
-    - name: Extracting Wordpress Package
-      unarchive:
-        src: "/root/wordpress-5.7.2.tar.gz"
-        dest: "/root/"
-        remote_src: yes
 
-    - name: stop firewalld
-      service:
-        name: "firewalld"
-        state: stopped
+- name: Pull the Docker image
+  shell: | 
+          cd /sunny
+          echo "# pull nginx-php image"
+          docker pull webdevops/php-nginx:ubuntu-18.04
 
-    - name: service httpd start
-      service:
-        name: "httpd"
-        state: started
-        enabled: yes
-
-    - name: Copying Extracted file to webserver default location
-      copy:
-        src: "/root/wordpress"
-        dest: "{{ dest_var }}"
-        remote_src: yes
-
-    - name: Making Selinux Permissive
-      selinux:
-        policy: targeted
-        state: permissive
-
-    - name: copy content
-      template:
-        src: "wp-config.j2"
-        dest: "{{ dest_var }}wordpress/wp-config.php"
-        force: true
-
-    - name: Get stuff from git
-      git:
-        repo: "https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git"
-        dest: /sunny
-        update: yes
-        version: main
-
-    - name: Pull the Docker image
-      shell: |
-        cd /sunny
-        echo "# pull nginx-php image"
-        docker pull webdevops/php-nginx:ubuntu-18.04
-
-    - name: Run the Docker image
-      shell: |
-        cd /sunny
-        echo "# run container with port mapping - host:container"
-        docker run -d -p 8003:8003 --name nginx-php webdevops/php-nginx:ubuntu-18.04
-        docker exec -it nginx-php bash -c "echo "<h1>Deployed via Terraform wih ELB</h1>" | sudo tee /var/www/html/index.html"
+- name: Run the Docker image
+  shell: |
+         cd /sunny
+         echo "# run container with port mapping - host:container"
+         docker run -d -p 80:80 --name nginx-php webdevops/php-nginx:ubuntu-18.04
+         docker exec -it nginx-php bash -c "echo "<h1>Deployed via Terraform wih ELB</h1>" | sudo tee /var/www/html/index.html"

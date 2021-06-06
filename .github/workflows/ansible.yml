@@ -1,26 +1,19 @@
 name: 'Ansible deploy'
 on:
   pull_request:
-    branches:
-      - dev
 
 jobs:
   anisble-deploy:
     name: 'Ansible Deploy'
-    runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: /sunny
+    runs-on: ubuntu-18.04
     steps:
       - name: 'Checkout'
         uses: actions/checkout@main
-      - name: 'Check ansible connectivity'
-        run: ansible test-web -m ping
-      - name: 'Run Terraform'
+      - name: check ansible connectivity
+        run: ansible prod-web -m ping
+      - name: Ansible deployment for roles
+        id: ansible
         run: |
-          cd /sunny/Invideo_task_aws/
-          echo "To setup provisioner"
-          terraform init
-          echo "To launch the EC2 cluster: "
-          terraform plan -out=aws.tfplan
-          terraform apply aws.tfplan --auto-approve
+          cd ./deployment/
+          ansible-playbook prod-web.yml --tags=docker-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"
+          ansible-playbook prod-web.yml --tags=create-role -e "githubuser=Shashankreddysunkara" -e "githubpassword=<change-me>"

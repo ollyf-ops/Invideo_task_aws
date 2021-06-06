@@ -1,6 +1,0 @@
-WORDPRESS_DB_HOST: wpdatabase.c4jmu7xahbew.eu-central-1.rds.amazonaws.com:3306
-WORDPRESS_DB_NAME: mysqldb
-WORDPRESS_DB_USERNAME: admin
-WORDPRESS_DB_PASSWORD: admin12345
-dest_var: /var/www/html/
-url_var: https://wordpress.org/latest.tar.gz

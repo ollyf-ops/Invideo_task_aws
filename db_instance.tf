@@ -5,8 +5,8 @@ resource "aws_security_group" "rds_default_security_group" {
    vpc_id     = local.vpc_id
 
   ingress {
-    from_port   = 3306
-    to_port     = 3306
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["172.31.32.0/20", "172.31.64.0/20", "172.31.96.0/20"]
   }
@@ -14,7 +14,7 @@ resource "aws_security_group" "rds_default_security_group" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "all"
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -27,10 +27,8 @@ resource "aws_db_instance" "db" {
   engine            = var.rds_engine
   engine_version    = var.rds_engine_version
   identifier        = var.rds_identifier
-  port              = var.port
   instance_class    = var.rds_instance_type
   allocated_storage = var.rds_storage_size
-  max_allocated_storage = var.max_allocated_storage
   name              = var.rds_db_name
   username          = var.rds_admin_user
   password          = var.rds_admin_password
@@ -48,23 +46,8 @@ resource "aws_db_instance" "db" {
   tags = {
     Name = "Postgres Database in ${var.aws_region}"
   }
-  depends_on = [
-    aws_security_group.rds_default_security_group,
-  ]
 }
-#WORDPRESS_DB_HOST (Database Host)
-output "rds_dbhost" {
-  value = aws_db_instance.db.endpoint
-}
-#WORDPRESS_DB_NAME(Database Name)
-output "rds_dbname" {
-  value = aws_db_instance.db.name
-}
-# Creating a Local file, which contains details of our Login Details #in Wordpress
-resource "local_file" "credentials" {
-  content = "WORDPRESS_DB_HOST => ${aws_db_instance.db.endpoint}\n WORDPRESS_DB_USER ${aws_db_instance.db.username}\n WORDPRESS_DB_PASSWORD ${aws_db_instance.db.password}\n WORDPRESS_DB_NAME ${aws_db_instance.db.name}"
-  filename = "details"
-}
+
 //resource "aws_db_subnet_group" "rds_subnet_group" {
 //  name       = "rds_subnet_group-${count.index}"
 //  count      = length(var.azs)
@@ -81,6 +64,6 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
   }
 }
 
-output "mysql-address" {
+output "postgress-address" {
   value = "address: aws_db_instance.db.address"
 }

@@ -12,24 +12,16 @@ variable "rds_storage_size" {
   default = "5"
 }
 
-variable "max_allocated_storage" {
-  default = "25"
-}
-
-variable "port" {
-  default = "3306"
-}
-
 variable "rds_engine" {
-  default = "mysql"
+  default = "postgres"
 }
 
 variable "rds_engine_version" {
-  default = "5.7.21"
+  default = "11.5"
 }
 
 variable "rds_db_name" {
-  default = "mysqldb"
+  default = "invideo_db"
 }
 
 variable "rds_admin_user" {
@@ -37,7 +29,7 @@ variable "rds_admin_user" {
 }
 
 variable "rds_admin_password" {
-  default = "admin12345"
+  default = "super_secret_password"
 }
 
 variable "rds_publicly_accessible" {
