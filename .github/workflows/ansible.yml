@@ -15,13 +15,13 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@main
       - name: 'Check ansible connectivity'
-        run: ansible test_web -m ping
+        run: ansible -i inventory -l test_web -m ping
       - name: 'Run Terraform'
         run: |
-          sudo -i
+#          sudo -i
           cd /sunny/Invideo_task_aws/
           echo "To setup provisioner"
-          terraform init
+          sudo terraform init
           echo "To launch the EC2 cluster: "
-          terraform plan -out=aws.tfplan
-          terraform apply aws.tfplan --auto-approve
+          sudo terraform plan -out=aws.tfplan
+          sudo terraform apply aws.tfplan --auto-approve
