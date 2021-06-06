@@ -18,7 +18,6 @@ jobs:
         run: ansible -i inventory -l test_web -m ping
       - name: 'Run Terraform'
         run: |
-#          sudo -i
           cd /sunny/Invideo_task_aws/
           echo "To setup provisioner"
           sudo terraform init
