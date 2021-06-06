@@ -15,7 +15,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@main
       - name: 'Check ansible connectivity'
-        run: ansible -i inventory -l test_web -m ping
+        run: ansible -i inventory -l testInstances -m ping
       - name: 'Run Terraform'
         run: |
           cd /sunny/Invideo_task_aws/
