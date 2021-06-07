@@ -21,7 +21,6 @@ jobs:
           Host rd_test
             HostName $HOST
             User $USERNAME
-            Password $PASSWORD
             IdentityFile  ~/.ssh/$KEY
             StrictHostKeyChecking no
           END
