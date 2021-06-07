@@ -40,15 +40,14 @@ jobs:
           cd /home/${{ secrets.USERNAME }}/
           mkdir -p sunny
           cd /home/${{ secrets.USERNAME }}/sunny/
-          git clone https://${{ secrets.GIT_USERNAME }}:${{ secrets.GIT_PASSWORD }}@github.com/${{ secrets.GIT_ACCOUNT }}/$CI_REPOSITORY_NAME.git && \
-          git checkout $CI_REPOSITORY_NAME && \
+          git clone git@github.com:${{ secrets.GIT_USERNAME }}/${{ secrets.REPO }}.git && \
+          git checkout ${{ secrets.BRANCH }} && \
           git status && /n/n
           git diff && /n/n
           git branch && " \n Current path of working dir is " pwd && \
-          cd /home/${{ secrets.USERNAME }}/sunny/$CI_REPOSITORY_NAME/
+          cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/
           echo "To setup provisioner"
           sudo terraform init
           echo "To launch the EC2 cluster: "
           sudo terraform plan -out=aws.tfplan
           sudo terraform apply aws.tfplan --auto-approve
-          
