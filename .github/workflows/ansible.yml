@@ -14,8 +14,7 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@main
-      - name: 'Check ansible connectivity'
-        run: ansible testInstances -m ping
+
       - name: Configure SSH
         run: |
           cat >>~/.ssh/config <<END
@@ -29,6 +28,10 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           KEY: ${{ secrets.KEY }}
           HOST: ${{ secrets.HOST }}
+
+      - name: 'Check ansible connectivity'
+          run: ssh rd_test 'sudo ansible testInstances -m ping'
+
 #      - name: 'Executing remote ssh commands using ssh key'
 #        uses: appleboy/ssh-action@master
 #        with:
@@ -50,7 +53,11 @@ jobs:
       #          script: whoami
       - name: 'Run Terraform'
         run: |
-          cd /home/$USERNAME/actions-runner/_work/$CI_REPOSITORY_NAME/$CI_REPOSITORY_NAME/
+          ssh rd_test
+          cd /home/$USERNAME/
+          git clone https://github.com/Shashankreddysunkara/Invideo_task_aws.git
+#          cd /home/$USERNAME/actions-runner/_work/$CI_REPOSITORY_NAME/$CI_REPOSITORY_NAME/
+          cd /home/$USERNAME/$CI_REPOSITORY_NAME/
           echo "To setup provisioner"
           sudo terraform init
           echo "To launch the EC2 cluster: "
