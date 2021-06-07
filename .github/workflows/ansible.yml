@@ -37,9 +37,9 @@ jobs:
       - name: 'Run Terraform'
         run: |
           ssh rd_test
-          cd /home/$USERNAME/
+          cd /home/${{ secrets.USERNAME }}/
           sudo git clone https://github.com/Shashankreddysunkara/Invideo_task_aws.git
-          cd /home/$USERNAME/$CI_REPOSITORY_NAME/
+          cd /home/${{ secrets.USERNAME }}/$CI_REPOSITORY_NAME/
           echo "To setup provisioner"
           sudo terraform init
           echo "To launch the EC2 cluster: "
