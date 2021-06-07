@@ -13,7 +13,7 @@ jobs:
 #        working-directory: /sunny
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@dev
+        uses: actions/checkout@v2
         with:
           # Relative path under $GITHUB_WORKSPACE to place the repository
           path: '/home/ubuntu/sunny/'
