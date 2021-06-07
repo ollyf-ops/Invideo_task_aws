@@ -15,36 +15,59 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@main
 
-      - name: Configure SSH
-        run: |
-          cat >>~/.ssh/config <<END
-          Host rd_test
-            HostName $HOST
-            User $USERNAME
-            IdentityFile  ~/.ssh/$KEY
-            StrictHostKeyChecking no
-          END
-          chmod 600 ~/.ssh/config
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          KEY: ${{ secrets.KEY }}
-          HOST: ${{ secrets.HOST }}
-          PASSWORD: ${{ secrets.PASSWORD }}
+#   NOTE: ONLY USE FOLLOWING STEP "Configure SSH" WHEN YOU ARE RUNNING FOR THE FIRST TIME FOR DEPLOYMENT
+#      - name: Configure SSH
+#        run: |
+#          cat >>~/.ssh/config <<END
+#          Host rd_test
+#            HostName $HOST
+#            User $USERNAME
+#            IdentityFile  ~/.ssh/$KEY
+#            StrictHostKeyChecking no
+#          END
+#          chmod 600 ~/.ssh/config
+#        env:
+#          USERNAME: ${{ secrets.USERNAME }}
+#          KEY: ${{ secrets.KEY }}
+#          HOST: ${{ secrets.HOST }}
+#          PASSWORD: ${{ secrets.PASSWORD }}
 
       - name: 'Check ansible connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
 
-      - name: 'Run Terraform'
-        run: |
-          ssh rd_test -tt 'cd /home/${{ secrets.USERNAME }}/ ; mkdir -p sunny ; cd /home/${{ secrets.USERNAME }}/sunny/
-          git clone git@github.com-repo-${{ secrets.REPO }}:${{ secrets.GIT_USERNAME }}/${{ secrets.REPO }}.git
-          git checkout ${{ secrets.BRANCH }}
-          git status && /n/n
-          git diff && /n/n
-          git branch && " \n Current path of working dir is " pwd
-          cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/
-          echo "To setup provisioner"
-          sudo terraform init
-          echo "To launch the EC2 cluster: "
-          sudo terraform plan -out=aws.tfplan
-          sudo terraform apply aws.tfplan --auto-approve '
+      - name: 'Create deployment directory'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/ ; mkdir -p sunny ; echo -e "/n/n" '
+
+      - name: 'Clone repo in deployment directory'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/ ; git clone git@github.com-repo-${{ secrets.REPO }}:${{ secrets.GIT_USERNAME }}/${{ secrets.REPO }}.git ; echo -e "/n/n" '
+
+      - name: 'Checkout git branch'
+        run:  ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ;  git checkout ${{ secrets.BRANCH }} ; echo -e "/n/n" '
+
+      - name: 'git status'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; git status ; echo -e "/n/n" '
+
+      - name: 'git diff'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; git diff ; echo -e "/n/n" '
+
+      - name: 'git branch'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; git branch ; echo -e "/n/n" '
+
+      - name: 'Show pwd and make docker-compose deployment'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; echo -e " Current path of working dir is " ; pwd ; echo -e "/n/n" '
+
+  Terraform-deploy:
+    name: 'Terraform Deploy'
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /sunny
+    steps:
+      - name: 'Terraform init'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; echo "\n Setting up provisioner \n " ; sudo terraform init ; echo -e "/n/n" '
+
+      - name: 'terraform plan'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; sudo terraform plan -out=aws.tfplan ; echo -e "/n/n" '
+
+      - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
+        run: ssh rd_test 'cd /home/${{ secrets.USERNAME }}/sunny/${{ secrets.REPO }}/ ; sudo terraform apply aws.tfplan --auto-approve ; echo -e "/n/n" '
