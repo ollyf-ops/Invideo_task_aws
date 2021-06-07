@@ -46,4 +46,3 @@ jobs:
           echo "To launch the EC2 cluster: "
           sudo terraform plan -out=aws.tfplan
           sudo terraform apply aws.tfplan --auto-approve
-          
