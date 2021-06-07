@@ -40,7 +40,7 @@ jobs:
           cd /home/${{ secrets.USERNAME }}/ ;
           mkdir -p sunny ;
           cd /home/${{ secrets.USERNAME }}/sunny/  ;
-          git clone git@github.com:${{ secrets.GIT_USERNAME }}/${{ secrets.REPO }}.git ;
+          git clone git@github.com-repo-${{ secrets.REPO }}:${{ secrets.GIT_USERNAME }}/${{ secrets.REPO }}.git ;
           git checkout ${{ secrets.BRANCH }} ;
           git status && /n/n ;
           git diff && /n/n ;
