@@ -1,3 +1,5 @@
+[![Ansible deploy](https://github.com/Shashankreddysunkara/Invideo_task_aws/actions/workflows/ansible.yml/badge.svg?branch=dev)](https://github.com/Shashankreddysunkara/Invideo_task_aws/actions/workflows/ansible.yml)
+
 # terraform-nginx-docker-containers-behind-a-ALB-with-private-subnets-instances-with-ASG
 
 VPC with 3 AZs with a public/private for each AZs
