@@ -21,7 +21,7 @@ jobs:
           Host rd_test
             HostName $HOST
             User $USERNAME
-            IdentityFile $KEY
+            IdentityFile  ~/.ssh/id_rsa
             StrictHostKeyChecking no
           END
         env:
