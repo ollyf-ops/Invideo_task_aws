@@ -26,15 +26,15 @@
 #
 #sudo apt install ansible -y
 #
-mkdir -p /sunny/
+mkdir -p /home/ubuntu/sunny/
 #
-cd /sunny/ || return
+cd /home/ubuntu/sunny/ || return
 #
-git clone https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git
+#git clone https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git
 #
 ## pull nginx image
 ##docker pull nginx:latest
-cd /sunny/Invideo_task_aws/ || return
+cd /home/ubuntu/sunny/Invideo_task_aws/ || return
 
 ansible-playbook prod-web.yml --tags=ansible-role-docker --vault-pass-file=vault_pass_file
 
