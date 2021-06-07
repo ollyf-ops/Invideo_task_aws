@@ -16,17 +16,30 @@ jobs:
         uses: actions/checkout@main
       - name: 'Check ansible connectivity'
         run: ansible testInstances -m ping
-      - name: 'Executing remote ssh commands using ssh key'
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script_stop: true
-          script: |
-            whoami
+      - name: Configure SSH
+          run: |
+            cat >>~/.ssh/config <<END
+            Host rd_test
+              HostName $HOST
+              User $USERNAME
+              IdentityFile $KEY
+              StrictHostKeyChecking no
+            END
+          env:
+            USERNAME: ${{ secrets.USERNAME }}
+            KEY: ${{ secrets.KEY }}
+            HOST: ${{ secrets.HOST }}
+#      - name: 'Executing remote ssh commands using ssh key'
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          key: ${{ secrets.KEY }}
+#          password: ${{ secrets.PASSWORD }}
+#          port: ${{ secrets.PORT }}
+#          script_stop: true
+#          script: |
+#            whoami
       #      - name: executing remote ssh commands using password
       #        uses: appleboy/ssh-action@master
       #        with:
@@ -37,7 +50,7 @@ jobs:
       #          script: whoami
       - name: 'Run Terraform'
         run: |
-          cd /sunny/Invideo_task_aws/
+          cd /home/$USERNAME/actions-runner/_work/$CI_REPOSITORY_NAME/$CI_REPOSITORY_NAME/
           echo "To setup provisioner"
           sudo terraform init
           echo "To launch the EC2 cluster: "
