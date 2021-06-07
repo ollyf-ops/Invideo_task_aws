@@ -30,7 +30,7 @@ jobs:
           HOST: ${{ secrets.HOST }}
 
       - name: 'Check ansible connectivity'
-          run: ssh rd_test 'sudo ansible testInstances -m ping'
+        run: ssh rd_test 'sudo ansible testInstances -m ping'
 
 #      - name: 'Executing remote ssh commands using ssh key'
 #        uses: appleboy/ssh-action@master
@@ -55,7 +55,7 @@ jobs:
         run: |
           ssh rd_test
           cd /home/$USERNAME/
-          git clone https://github.com/Shashankreddysunkara/Invideo_task_aws.git
+          sudo git clone https://github.com/Shashankreddysunkara/Invideo_task_aws.git
 #          cd /home/$USERNAME/actions-runner/_work/$CI_REPOSITORY_NAME/$CI_REPOSITORY_NAME/
           cd /home/$USERNAME/$CI_REPOSITORY_NAME/
           echo "To setup provisioner"
