@@ -17,18 +17,18 @@ jobs:
       - name: 'Check ansible connectivity'
         run: ansible testInstances -m ping
       - name: Configure SSH
-          run: |
-            cat >>~/.ssh/config <<END
-            Host rd_test
-              HostName $HOST
-              User $USERNAME
-              IdentityFile $KEY
-              StrictHostKeyChecking no
-            END
-          env:
-            USERNAME: ${{ secrets.USERNAME }}
-            KEY: ${{ secrets.KEY }}
-            HOST: ${{ secrets.HOST }}
+        run: |
+          cat >>~/.ssh/config <<END
+          Host rd_test
+            HostName $HOST
+            User $USERNAME
+            IdentityFile $KEY
+            StrictHostKeyChecking no
+          END
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          KEY: ${{ secrets.KEY }}
+          HOST: ${{ secrets.HOST }}
 #      - name: 'Executing remote ssh commands using ssh key'
 #        uses: appleboy/ssh-action@master
 #        with:
