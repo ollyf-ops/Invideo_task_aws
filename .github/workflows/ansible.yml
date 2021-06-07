@@ -17,7 +17,7 @@ jobs:
 
       - name: Configure SSH
         run: |
-          cat >>~/.ssh/config <<END
+          sudo cat >>~/.ssh/config <<END
           Host rd_test
             HostName $HOST
             User $USERNAME
@@ -32,25 +32,6 @@ jobs:
       - name: 'Check ansible connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
 
-#      - name: 'Executing remote ssh commands using ssh key'
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.HOST }}
-#          username: ${{ secrets.USERNAME }}
-#          key: ${{ secrets.KEY }}
-#          password: ${{ secrets.PASSWORD }}
-#          port: ${{ secrets.PORT }}
-#          script_stop: true
-#          script: |
-#            whoami
-      #      - name: executing remote ssh commands using password
-      #        uses: appleboy/ssh-action@master
-      #        with:
-      #          host: ${{ secrets.HOST }}
-      #          username: ${{ secrets.USERNAME }}
-      #          password: ${{ secrets.PASSWORD }}
-      #          port: ${{ secrets.PORT }}
-      #          script: whoami
       - name: 'Run Terraform'
         run: |
           ssh rd_test
