@@ -17,17 +17,19 @@ jobs:
 
       - name: Configure SSH
         run: |
-          sudo cat >>~/.ssh/config <<END
+          cat >>~/.ssh/config <<END
           Host rd_test
             HostName $HOST
             User $USERNAME
-            IdentityFile  ~/.ssh/id_rsa
+            Password $PASSWORD
+            IdentityFile  ~/.ssh/$KEY
             StrictHostKeyChecking no
           END
         env:
           USERNAME: ${{ secrets.USERNAME }}
           KEY: ${{ secrets.KEY }}
           HOST: ${{ secrets.HOST }}
+          PASSWORD: ${{ secrets.PASSWORD }}
 
       - name: 'Check ansible connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
