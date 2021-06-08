@@ -12,12 +12,13 @@ jobs:
 #      run:
 #        working-directory: /sunny
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v2
-        with:
-          # Relative path under $GITHUB_WORKSPACE to place the repository
-          path: '/home/ubuntu/sunny/'
-
+#      - name: 'Checkout'
+#        uses: actions/checkout@v2
+#        with:
+#          # Relative path under $GITHUB_WORKSPACE to place the repository
+#          path: '/home/ubuntu/sunny/'
+      - name: 'Clone repo in deployment directory'
+        run: ssh rd_test 'cd /home/ubuntu/sunny/ ; git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git ; echo -e "\n\n" '
 
       #   NOTE: ONLY USE FOLLOWING STEP "Configure SSH" WHEN YOU ARE RUNNING FOR THE FIRST TIME FOR DEPLOYMENT
 #      - name: Configure SSH
