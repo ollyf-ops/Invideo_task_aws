@@ -116,13 +116,13 @@ jobs:
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         shell: bash
         run: |
-          ssh rd_test '
+          su ubuntu
           if [ 1>0 ]; then
             echo "Performing git checkout..."
             cd /home/ubuntu/sunny/
             sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
           else
-            sudo git pull origin main
+            sudo git pull origin dev
             exit
           fi '
         continue-on-error: ${{ fromJSON(env.continue) }}
@@ -184,7 +184,10 @@ jobs:
           color: warning
 
       - name: 'Checkout git branch'
-        run:  ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ;  git checkout dev '
+        run:  |
+          su ubuntu
+          cd /home/ubuntu/sunny/Invideo_task_aws/
+          sudo git checkout dev
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -226,7 +229,7 @@ jobs:
           color: warning
 
       - name: 'git status'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git status '
+        run: ssh rd_test ' su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git status '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
       - name: Notify slack success
