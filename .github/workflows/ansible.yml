@@ -18,10 +18,40 @@ jobs:
     needs: [ Checkout_Repo ]
     runs-on: self-hosted
     steps:
+      - name: Notify slack success
+        if: success()
+        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: aws
+          status: STARTING - Check ansible inventory connectivity
+          color: warning
       - name: 'Check ansible inventory connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
+      - name: Notify slack success
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          # Updates existing message from the first step
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: aws
+          status: SUCCESS - Check ansible inventory connectivity
+          color: good
+      - name: Notify slack fail
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: aws
+          status: FAILED
+          color: danger
 
   Deployment_Directory:
     needs: [ Ansible_Inventory_check ]
@@ -166,17 +196,17 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-  print:
-    name: Print
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Outputs
-        env:
-          slack_outputs: ${{ toJson(on.slack.outputs) }}
-        run: |
-         echo slack: $slack_outputs
-        continue-on-error: ${{ fromJSON(env.continue) }}
-        timeout-minutes: ${{ fromJSON(env.time) }}
+#  print:
+#    name: Print
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Print Outputs
+#        env:
+#          slack_outputs: ${{ toJson(on.slack.outputs) }}
+#        run: |
+#         echo slack: $slack_outputs
+#        continue-on-error: ${{ fromJSON(env.continue) }}
+#        timeout-minutes: ${{ fromJSON(env.time) }}
 
 #        - name: Delete workflow runs
 #          uses: GitRML/delete-workflow-runs@main
