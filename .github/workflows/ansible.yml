@@ -15,7 +15,6 @@ env:
 jobs:
   Ansible_Inventory_check:
     timeout-minutes: 5
-    needs: [ Checkout_Repo ]
     runs-on: self-hosted
     steps:
       - name: Notify slack success
