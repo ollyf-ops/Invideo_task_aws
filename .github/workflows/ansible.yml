@@ -29,7 +29,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: 'Clone repo in deployment directory'
-        if: ${{ steps.Deployment_Directory.outcome == success }} && success()
+        if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         shell: bash
         run: ssh rd_test '
           if [ echo "true" ]; then
@@ -55,7 +55,7 @@ jobs:
           path: '/home/ubuntu/'
   Git_Branch_Checkout:
     needs: [Deployment_Directory]
-    if: ${{ steps.Git_Branch_Checkout.outcome == success }} && success()
+    if: ${{ steps.Git_Branch_Checkout.outcome == 'success' }} && success()
     runs-on: self-hosted
     steps:
       - name: 'Checkout git branch'
