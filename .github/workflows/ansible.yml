@@ -423,7 +423,7 @@ jobs:
   Terraform_init:
     name: 'Terraform_init'
     if: ${{ github.ref == 'refs/heads/dev' }}
-    needs: [Deploy]
+    needs: [Deployment]
     runs-on: self-hosted
     steps:
       - name: Notify slack success
