@@ -66,13 +66,15 @@ jobs:
           channel: aws
           status: STARTING - Check ansible inventory connectivity
           color: warning
+
       - name: 'Switch to deployment directory'
         id: Deployment_Directory
-        run: ssh rd_test 'cd /home/ubuntu/sunny/" '
+        run: ssh rd_test 'cd /home/ubuntu/sunny/ '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
         env:
           Deployment_Directory_CONTEXT: ${{ toJSON(steps) }}
+
       - name: Notify slack success
         if: success()
         env:
@@ -551,7 +553,7 @@ jobs:
           channel: aws
           status: STARTING - Check ansible inventory connectivity
           color: warning
-          
+
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan " '
         continue-on-error: ${{ fromJSON(env.continue) }}
