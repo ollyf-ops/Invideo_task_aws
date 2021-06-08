@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - dev
-    paths:
-      - /
 
 jobs:
   Checkout_Repo:
