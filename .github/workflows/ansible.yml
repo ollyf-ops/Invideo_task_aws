@@ -116,6 +116,7 @@ jobs:
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         shell: bash
         run: |
+          ssh rd_test '
           su ubuntu
           if [ 1>0 ]; then
             echo "Performing git checkout..."
@@ -185,9 +186,10 @@ jobs:
 
       - name: 'Checkout git branch'
         run:  |
+          ssh rd_test '
           su ubuntu
           cd /home/ubuntu/sunny/Invideo_task_aws/
-          sudo git checkout dev
+          sudo git checkout dev '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -270,7 +272,7 @@ jobs:
           color: warning
 
       - name: 'git diff'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git diff '
+        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git diff '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -314,9 +316,10 @@ jobs:
       - name: "Pull repo"
         shell: "bash"
         run: |
+          ssh rd_test '
           su ubuntu
           cd /home/ubuntu/sunny/Invideo_task_aws/
-          sudo git pull origin dev
+          sudo git pull origin dev '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -358,7 +361,7 @@ jobs:
           color: warning
 
       - name: 'git branch'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
+        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -400,7 +403,7 @@ jobs:
           color: warning
 
       - name: 'Show pwd and make docker-compose deployment'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd '
+        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -443,7 +446,7 @@ jobs:
           color: warning
 
       - name: 'Terraform init'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init '
+        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -487,9 +490,10 @@ jobs:
 
       - name: 'terraform plan'
         run: |
+           ssh rd_test '
            su ubuntu
            cd /home/ubuntu/sunny/Invideo_task_aws/
-           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1"
+           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -532,7 +536,7 @@ jobs:
           color: warning
 
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan '
+        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
