@@ -3,10 +3,12 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - /
 
 jobs:
-  anisble-deploy:
-    name: 'Ansible Deploy'
+  Checkout_Repo:
+#    if: ${{ github.ref == 'refs/heads/dev' }}
     runs-on: self-hosted
 #    defaults:
 #      run:
@@ -36,43 +38,110 @@ jobs:
 #          KEY: ${{ secrets.KEY }}
 #          HOST: ${{ secrets.HOST }}
 #          PASSWORD: ${{ secrets.PASSWORD }}
-
-      - name: 'Check ansible connectivity'
+  Ansible_Inventory_check:
+    needs: [Checkout_Repo]
+#    if: ${{ github.ref == 'refs/heads/dev' }}
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    steps:
+      - name: 'Check ansible inventory connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
 
+  Deployment_Directory:
+    #    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [Ansible_Inventory_check]
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    steps:
       - name: 'Create deployment directory'
         run: ssh rd_test 'cd /home/ubuntu/ ; mkdir -p sunny ; echo -e "\n\n" '
 
 #      - name: 'Clone repo in deployment directory'
 #        run: ssh rd_test 'cd /home/ubuntu/sunny/ ; git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git ; echo -e "\n\n" '
 
+  Git_Branch_Checkout:
+    #    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [Deployment_Directory]
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    steps:
       - name: 'Checkout git branch'
         run:  ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ;  git checkout dev ; echo -e "\n\n" '
 
+  Git_Status_Check:
+    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [Git_Branch_Checkout]
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    steps:
       - name: 'git status'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git status ; echo -e "\n\n" '
 
+  Git_Diff_Check:
+    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [Git_Status_Check]
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    steps:
       - name: 'git diff'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git diff ; echo -e "\n\n" '
 
+  Git_Branch_Check:
+    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [Git_Diff_Check]
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    steps:
       - name: 'git branch'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n\n" '
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
 
+  Deploy:
+    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [Git_Branch_Check]
+    runs-on: self-hosted
+    #    defaults:
+    #      run:
+    #        working-directory: /sunny
+    #Checkout_Repo, Ansible_Inventory_check, Deployment_Directory, Git_Branch_Checkout, Git_Status_Check, Git_Diff_Check, Git_Branch_Check,
+    steps:
       - name: 'Show pwd and make docker-compose deployment'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd ; echo -e "\n\n" '
 
-  Terraform-deploy:
-    name: 'Terraform Deploy'
+  Terraform_init:
+    name: 'Terraform_init'
+    if: ${{ github.ref == 'refs/heads/dev' }}
+      needs: [ Deploy ]
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: /sunny
     steps:
       - name: 'Terraform init'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init ; echo -e "\n\n" '
 
+  Terraform_plan:
+    name: 'Terraform_plan'
+    if: ${{ github.ref == 'refs/heads/dev' }}
+      needs: [ Terraform_init ]
+    runs-on: self-hosted
+    steps:
       - name: 'terraform plan'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" ; echo -e "\n\n" '
 
+  Terraform_apply:
+    name: 'Terraform_apply'
+    if: ${{ github.ref == 'refs/heads/dev' }}
+      needs: [ Terraform_plan ]
+    runs-on: self-hosted
+    steps:
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan ; echo -e "\n\n" '

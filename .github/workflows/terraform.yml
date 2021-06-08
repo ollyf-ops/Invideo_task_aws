@@ -1,0 +1,49 @@
+name: 'Terraform deploy'
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  Terraform-deploy:
+    name: 'Terraform Deploy'
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /sunny
+    steps:
+      - name: 'Terraform init'
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init ; echo -e "\n\n" '
+
+      - name: 'terraform plan'
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" ; echo -e "\n\n" '
+
+      - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan ; echo -e "\n\n" '
+
+#  Terraform_init:
+#    name: 'Terraform_init'
+#    if: ${{ github.ref == 'refs/heads/dev' }}
+#      needs: [ Deploy ]
+#    runs-on: self-hosted
+#    steps:
+#      - name: 'Terraform init'
+#        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init ; echo -e "\n\n" '
+#
+#  Terraform_plan:
+#    name: 'Terraform_plan'
+#    if: ${{ github.ref == 'refs/heads/dev' }}
+#      needs: [ Terraform_init ]
+#    runs-on: self-hosted
+#    steps:
+#      - name: 'terraform plan'
+#        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" ; echo -e "\n\n" '
+#
+#  Terraform_apply:
+#    name: 'Terraform_apply'
+#    if: ${{ github.ref == 'refs/heads/dev' }}
+#      needs: [ Terraform_plan ]
+#    runs-on: self-hosted
+#    steps:
+#      - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
+#        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan ; echo -e "\n\n" '
