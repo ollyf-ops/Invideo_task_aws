@@ -122,7 +122,7 @@ jobs:
   Terraform_init:
     name: 'Terraform_init'
     if: ${{ github.ref == 'refs/heads/dev' }}
-    needs: [ Deploy ]
+    needs: [Deploy]
     runs-on: self-hosted
     steps:
       - name: 'Terraform init'
@@ -131,7 +131,7 @@ jobs:
   Terraform_plan:
     name: 'Terraform_plan'
     if: ${{ github.ref == 'refs/heads/dev' }}
-    needs: [ Terraform_init ]
+    needs: [Terraform_init]
     runs-on: self-hosted
     steps:
       - name: 'terraform plan'
@@ -140,7 +140,7 @@ jobs:
   Terraform_apply:
     name: 'Terraform_apply'
     if: ${{ github.ref == 'refs/heads/dev' }}
-    needs: [ Terraform_plan ]
+    needs: [Terraform_plan]
     runs-on: self-hosted
     steps:
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
