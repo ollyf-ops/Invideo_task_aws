@@ -49,7 +49,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Check ansible inventory connectivity
           color: danger
 
   Deployment_Directory:
@@ -64,7 +64,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Deployment_Directory
           color: warning
 
       - name: 'Switch to deployment directory'
@@ -84,7 +84,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Deployment_Directory
           color: good
       - name: Notify slack fail
         if: failure()
@@ -93,7 +93,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Deployment_Directory
           color: danger
 
   Checkout_Repo:
@@ -108,14 +108,15 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Checkout_Repo
           color: warning
 
       - name: 'Clone repo in deployment directory'
         id: Checkout_Repo
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         shell: bash
-        run: ssh rd_test '
+        run: |
+          ssh rd_test '
           if [ echo "true" ]; then
             echo "Performing git checkout..."
             cd /home/ubuntu/sunny/
@@ -154,7 +155,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Checkout_Repo
           color: good
       - name: Notify slack fail
         if: failure()
@@ -163,7 +164,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Checkout_Repo
           color: danger
 
   Git_Branch_Checkout:
@@ -179,7 +180,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Git_Branch_Checkout
           color: warning
 
       - name: 'Checkout git branch'
@@ -196,7 +197,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Git_Branch_Checkout
           color: good
       - name: Notify slack fail
         if: failure()
@@ -205,7 +206,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Git_Branch_Checkout
           color: danger
 
   Git_Status_Check:
@@ -221,7 +222,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Git_Status_Check
           color: warning
 
       - name: 'git status'
@@ -237,7 +238,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Git_Status_Check
           color: good
       - name: Notify slack fail
         if: failure()
@@ -246,7 +247,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Git_Status_Check
           color: danger
 
   Git_Diff_Check:
@@ -262,7 +263,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Git_Diff_Check
           color: warning
 
       - name: 'git diff'
@@ -279,7 +280,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Git_Diff_Check
           color: good
       - name: Notify slack fail
         if: failure()
@@ -288,7 +289,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Git_Diff_Check
           color: danger
 
   Git_Pull:
@@ -304,7 +305,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Git_Pull
           color: warning
 
       - name: "Pull repo"
@@ -323,7 +324,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Git_Pull
           color: good
       - name: Notify slack fail
         if: failure()
@@ -332,7 +333,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Git_Pull
           color: danger
 
   Git_Branch_Check:
@@ -348,7 +349,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Git_Branch_Check
           color: warning
 
       - name: 'git branch'
@@ -365,7 +366,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Git_Branch_Check
           color: good
       - name: Notify slack fail
         if: failure()
@@ -374,10 +375,10 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Git_Branch_Check
           color: danger
 
-  Deploy:
+  Deployment:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Check]
     runs-on: self-hosted
@@ -390,7 +391,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Deployment
           color: warning
 
       - name: 'Show pwd and make docker-compose deployment'
@@ -407,7 +408,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Deployment
           color: good
       - name: Notify slack fail
         if: failure()
@@ -416,7 +417,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Deployment
           color: danger
 
   Terraform_init:
@@ -433,7 +434,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Terraform_init
           color: warning
 
       - name: 'Terraform init'
@@ -450,7 +451,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Terraform_init
           color: good
       - name: Notify slack fail
         if: failure()
@@ -459,7 +460,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Terraform_init
           color: danger
 
   Terraform_plan:
@@ -476,7 +477,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Terraform_plan
           color: warning
 
       - name: 'terraform plan'
@@ -493,7 +494,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Terraform_plan
           color: good
       - name: Notify slack fail
         if: failure()
@@ -502,7 +503,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Terraform_plan
           color: danger
 
   Terraform_apply:
@@ -519,7 +520,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Check ansible inventory connectivity
+          status: STARTING - Terraform_apply
           color: warning
 
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
@@ -536,7 +537,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
+          status: SUCCESS - Terraform_apply
           color: good
       - name: Notify slack fail
         if: failure()
@@ -545,7 +546,7 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED
+          status: FAILED - Terraform_apply
           color: danger
 
 #  print:
