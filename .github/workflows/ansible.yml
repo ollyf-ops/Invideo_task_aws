@@ -75,9 +75,9 @@ outputs:
       runs-on: self-hosted
       steps:
         - name: "Push to heroku"
-            shell: "bash"
-            run: |
-              git pull git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
+          shell: "bash"
+          run: |
+            git pull git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
 
     Git_Branch_Check:
       if: ${{ github.ref == 'refs/heads/dev' }}
