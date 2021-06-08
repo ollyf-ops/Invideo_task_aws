@@ -103,7 +103,7 @@ jobs:
           path: '/home/ubuntu/'
   Git_Branch_Checkout:
     needs: [Deployment_Directory]
-    if: ${{ steps.Checkout_Repo.outcome == 'success' }} && success()
+    if: success()
     runs-on: self-hosted
     steps:
       - name: 'Checkout git branch'
