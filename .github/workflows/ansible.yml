@@ -11,8 +11,8 @@ inputs:
     description: If true, then output debugging information
     default: true
 jobs:
-  timeout-minutes: 5
   Ansible_Inventory_check:
+    timeout-minutes: 5
     needs: [ Checkout_Repo ]
     runs-on: self-hosted
     steps:
