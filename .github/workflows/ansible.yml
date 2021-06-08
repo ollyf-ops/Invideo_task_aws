@@ -33,7 +33,7 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
         env:
-          Deployment_Directory_CONTEXT: ${{ toJSON(Deployment_Directory) }}
+          Deployment_Directory_CONTEXT: ${{ toJSON(steps) }}
 
   Checkout_Repo:
     needs: [Deployment_Directory]
@@ -55,7 +55,7 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
         env:
-          Checkout_Repo_CONTEXT: ${{ toJSON(Checkout_Repo) }}
+          Checkout_Repo_CONTEXT: ${{ toJSON(steps) }}
 #        - name: sync Repo
 #            uses: repo-sync/github-sync@v2
 #            with:
