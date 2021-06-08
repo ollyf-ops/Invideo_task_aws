@@ -18,10 +18,6 @@ jobs:
     needs: [ Checkout_Repo ]
     runs-on: self-hosted
     steps:
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJSON(steps) }}
-
       - name: 'Check ansible inventory connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
         continue-on-error: ${{ fromJSON(env.continue) }}
