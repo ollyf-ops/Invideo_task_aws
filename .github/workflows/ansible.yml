@@ -117,7 +117,6 @@ jobs:
         shell: bash
         run: |
           ssh rd_test '
-#          su ubuntu
           if [ 1>0 ]; then
             echo "Performing git checkout..."
             cd /home/ubuntu/sunny/
@@ -187,7 +186,6 @@ jobs:
       - name: 'Checkout git branch'
         run:  |
           ssh rd_test '
-#          su ubuntu
           cd /home/ubuntu/sunny/Invideo_task_aws/
           sudo git checkout dev '
         continue-on-error: ${{ fromJSON(env.continue) }}
@@ -317,7 +315,6 @@ jobs:
         shell: "bash"
         run: |
           ssh rd_test '
-#          su ubuntu
           cd /home/ubuntu/sunny/Invideo_task_aws/
           sudo git pull origin dev '
         continue-on-error: ${{ fromJSON(env.continue) }}
@@ -491,7 +488,6 @@ jobs:
       - name: 'terraform plan'
         run: |
            ssh rd_test '
-#           su ubuntu
            cd /home/ubuntu/sunny/Invideo_task_aws/
            sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" '
         continue-on-error: ${{ fromJSON(env.continue) }}
