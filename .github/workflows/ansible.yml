@@ -30,19 +30,14 @@ outputs:
         - name: 'Clone repo in deployment directory'
           if: ${{ steps.Deployment_Directory.outcome == success }} && success()
           shell: bash
-          run: ssh rd_test ' if [ ${{ steps.Deployment_Directory.outcome == success }} ]; then
-            echo "Performing git checkout..."
-            cd /home/ubuntu/sunny/
-            git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
-            #  git checkout travis-DEM-Server && \
-            #  git status && /n/n
-            #  git diff && /n/n
-            #  git branch && " \n Current path of working dir is " pwd && \
-            #  #git pull origin travis-DEM-Server
-            #  exit
+          run: ssh rd_test '
+            if [ ${{ steps.Deployment_Directory.outcome == success }} ]; then
+              echo "Performing git checkout..."
+              cd /home/ubuntu/sunny/
+              git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
             else
-            git pull origin main
-            exit
+              git pull origin main
+              exit
             fi '
 #        - name: sync Repo
 #            uses: repo-sync/github-sync@v2
