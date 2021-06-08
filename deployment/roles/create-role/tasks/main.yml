@@ -59,7 +59,7 @@
         repo: "https://Shashankreddysunkara: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@github.com/Shashankreddysunkara/Invideo_task_aws.git"
         dest: /sunny
         update: yes
-        version: main
+        version: dev
 
     - name: Pull the Docker image
       shell: |

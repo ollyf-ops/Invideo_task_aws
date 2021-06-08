@@ -117,12 +117,12 @@ jobs:
         shell: bash
         run: |
           ssh rd_test '
-          if [ echo "true" ]; then
+          if [ 1>0 ]; then
             echo "Performing git checkout..."
             cd /home/ubuntu/sunny/
-            git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
+            sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
           else
-            git pull origin main
+            sudo git pull origin main
             exit
           fi '
         continue-on-error: ${{ fromJSON(env.continue) }}
@@ -311,7 +311,9 @@ jobs:
       - name: "Pull repo"
         shell: "bash"
         run: |
-          git pull git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
+          su ubuntu
+          cd /home/ubuntu/sunny/Invideo_task_aws/
+          sudo git pull origin dev
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -481,7 +483,10 @@ jobs:
           color: warning
 
       - name: 'terraform plan'
-        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" '
+        run: |
+           su ubuntu
+           cd /home/ubuntu/sunny/Invideo_task_aws/
+           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1"
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
