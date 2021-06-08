@@ -5,11 +5,11 @@ on:
       - dev
 env:
   CLONE_DIR: /home/ubuntu/sunny/
-inputs:
-  debug:
-    required: true
-    description: If true, then output debugging information
-    default: true
+#inputs:
+#  debug:
+#    required: true
+#    description: If true, then output debugging information
+#    default: true
 jobs:
   Ansible_Inventory_check:
     timeout-minutes: 5
@@ -32,7 +32,7 @@ jobs:
         if: ${{ steps.Deployment_Directory.outcome == success }} && success()
         shell: bash
         run: ssh rd_test '
-          if [ ${{ steps.Deployment_Directory.outcome == success }} ]; then
+          if [ echo "true" ]; then
             echo "Performing git checkout..."
             cd /home/ubuntu/sunny/
             git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
