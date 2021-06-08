@@ -5,6 +5,8 @@ on:
       - dev
 env:
   CLONE_DIR: /home/ubuntu/sunny/
+  continue: false
+  time: 3
 #inputs:
 #  debug:
 #    required: true
@@ -16,19 +18,33 @@ jobs:
     needs: [ Checkout_Repo ]
     runs-on: self-hosted
     steps:
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJSON(steps) }}
+
       - name: 'Check ansible inventory connectivity'
         run: ssh rd_test 'sudo ansible testInstances -m ping'
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
+
   Deployment_Directory:
     needs: [ Ansible_Inventory_check ]
     runs-on: self-hosted
     steps:
       - name: 'Switch to deployment directory'
+        id: Deployment_Directory
         run: ssh rd_test 'cd /home/ubuntu/sunny/" '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
+        env:
+          Deployment_Directory_CONTEXT: ${{ toJSON(Deployment_Directory) }}
+
   Checkout_Repo:
     needs: [Deployment_Directory]
     runs-on: self-hosted
     steps:
       - name: 'Clone repo in deployment directory'
+        id: Checkout_Repo
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         shell: bash
         run: ssh rd_test '
@@ -40,6 +56,10 @@ jobs:
             git pull origin main
             exit
           fi '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
+        env:
+          Checkout_Repo_CONTEXT: ${{ toJSON(Checkout_Repo) }}
 #        - name: sync Repo
 #            uses: repo-sync/github-sync@v2
 #            with:
@@ -47,6 +67,8 @@ jobs:
 #              source_branch: "dev"
 #              destination_branch: "dev"
       - name: Clone typescript repo
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
         uses: actions/checkout@v2
         with:
           repository: 'Shashankreddysunkara/Invideo_task_aws'
@@ -55,11 +77,13 @@ jobs:
           path: '/home/ubuntu/'
   Git_Branch_Checkout:
     needs: [Deployment_Directory]
-    if: ${{ steps.Git_Branch_Checkout.outcome == 'success' }} && success()
+    if: ${{ steps.Checkout_Repo.outcome == 'success' }} && success()
     runs-on: self-hosted
     steps:
       - name: 'Checkout git branch'
         run:  ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ;  git checkout dev " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Git_Status_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -68,6 +92,8 @@ jobs:
     steps:
       - name: 'git status'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git status " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Git_Diff_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -76,16 +102,20 @@ jobs:
     steps:
       - name: 'git diff'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git diff " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Git_Pull:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [ Git_Diff_Check ]
     runs-on: self-hosted
     steps:
-      - name: "Push to heroku"
+      - name: "Pull repo"
         shell: "bash"
         run: |
           git pull git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Git_Branch_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -94,6 +124,8 @@ jobs:
     steps:
       - name: 'git branch'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Deploy:
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -102,6 +134,8 @@ jobs:
     steps:
       - name: 'Show pwd and make docker-compose deployment'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Terraform_init:
     name: 'Terraform_init'
@@ -111,6 +145,8 @@ jobs:
     steps:
       - name: 'Terraform init'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Terraform_plan:
     name: 'Terraform_plan'
@@ -120,6 +156,8 @@ jobs:
     steps:
       - name: 'terraform plan'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   Terraform_apply:
     name: 'Terraform_apply'
@@ -129,6 +167,8 @@ jobs:
     steps:
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan " '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
   print:
     name: Print
@@ -139,6 +179,8 @@ jobs:
           slack_outputs: ${{ toJson(on.slack.outputs) }}
         run: |
          echo slack: $slack_outputs
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
 
 #        - name: Delete workflow runs
 #          uses: GitRML/delete-workflow-runs@main
