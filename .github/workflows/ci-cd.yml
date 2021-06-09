@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: Running
-        if: always()
+          status: starting
+          channel: '#github-actions-pipeline-status'
 
       - name: Notify slack success
         if: success()
@@ -74,10 +74,9 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
+
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -132,10 +131,9 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
+
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -223,10 +221,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -283,10 +279,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -338,10 +332,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -394,10 +386,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -454,10 +444,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -510,10 +498,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -577,10 +563,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -634,10 +618,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -698,10 +680,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -755,10 +735,8 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
+          status: starting
           channel: '#github-actions-pipeline-status'
-        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
