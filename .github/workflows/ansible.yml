@@ -488,7 +488,7 @@ jobs:
         run: |
            ssh rd_test '
            cd /home/ubuntu/sunny/Invideo_task_aws/
-           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=eu-central-1" '
+           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=us-east-1" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 

@@ -9,8 +9,8 @@ variable "aws_secret_key" {
 }
 
 variable "aws_region" {
-  description = "Europe (Frankfurt)"
-  default     = "eu-central-1"
+  description = "US EAST Virginia"
+  default     = "us-east-1"
 }
 
 # dynamically retrieves all availability zones for current region
@@ -20,7 +20,7 @@ variable "aws_region" {
 #   comment off this "azs" to retrive all AZs dynamically (uncomment the line above "data ...")
 variable "azs" {
   type = list
-  default = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+  default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
 variable "vpc_cidr" {
@@ -32,7 +32,7 @@ variable "ec2_amis" {
   type        = map
 
   default = {
-    "eu-central-1" = "ami-00f654d297eee2abd"
+    "eu-central-1" = "ami-0fa473453888edabc"
   }
 }
 
