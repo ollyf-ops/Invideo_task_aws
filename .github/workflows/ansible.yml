@@ -487,6 +487,7 @@ jobs:
 
       - name: 'terraform plan'
         run: |
+           ssh -t rd_test '
            cd /home/ubuntu/sunny/Invideo_task_aws/
            echo -e "\n\n"
            pwd
