@@ -114,16 +114,14 @@ jobs:
       - name: 'Clone repo in deployment directory'
         id: Checkout_Repo
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
+        shell: bash
         run: |
-           cd /home/ubuntu/sunny/ ;
-           if ! [[ ls -lrt | grep Invideo_task_aws ]]; then
+           if ! [[ grep - q "Invideo_task_aws" /home/ubuntu/sunny/ ]] ; then
               echo "Performing git checkout..." ; cd /home/ubuntu/sunny/ ; sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git;
-              exit 0 ;
-           elif [[ ls -lrt | grep Invideo_task_aws ]] ; then
+           elif [[ grep - q "Invideo_task_aws" /home/ubuntu/sunny/ ]] ; then
               echo "Repo already exists. Performing git pull origin dev..." ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo git pull origin dev;
-              exit 0 ;
            else
-              exit 1;
+              exit;
            fi
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
