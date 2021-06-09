@@ -117,8 +117,8 @@ jobs:
         run: |
            if [ true ]; then
               echo "Performing git checkout..." ; cd /home/ubuntu/sunny/ ; sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git;
-           elseif [ true ] ; then
-              cd /home/ubuntu/sunny/Invideo_task_aws/ && sudo git pull origin dev;
+           elif [ true ] ; then
+              echo "Repo already exists. Performing git pull origin dev..." ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo git pull origin dev;
            else
               exit 1;
            fi
