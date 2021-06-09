@@ -488,13 +488,14 @@ jobs:
       - name: 'terraform plan'
         run: |
            ssh rd_test '
+           sudo -i
            cd /home/ubuntu/sunny/Invideo_task_aws/
            echo -e "\n\n"
            pwd
            echo -e "\n\n"
            whoami
            echo -e "\n\n"
-           terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" '
+           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
