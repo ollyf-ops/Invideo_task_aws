@@ -115,7 +115,12 @@ jobs:
         id: Checkout_Repo
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         run: |
-          ssh rd_test ' if [ true ]; then echo "Performing git checkout..." ; cd /home/ubuntu/sunny/ ; sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git ; else cd /home/ubuntu/sunny/Invideo_task_aws/ && sudo git pull origin dev; fi'
+#          ssh rd_test ' if [ true ]; then echo "Performing git checkout..." ; cd /home/ubuntu/sunny/ ; sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git ; else cd /home/ubuntu/sunny/Invideo_task_aws/ && sudo git pull origin dev; fi'
+               if [ true ]; then
+                  echo "Performing git checkout..." ; cd /home/ubuntu/sunny/ ; sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git ;
+               else
+                  cd /home/ubuntu/sunny/Invideo_task_aws/ && sudo git pull origin dev;
+               fi
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
         env:
