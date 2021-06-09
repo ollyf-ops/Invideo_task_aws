@@ -22,7 +22,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
-
+          if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -76,7 +76,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
-
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -133,7 +133,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
-
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -223,6 +223,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -281,6 +282,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -334,6 +336,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+          if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -388,6 +391,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -446,6 +450,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -500,6 +505,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -565,6 +571,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -620,6 +627,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -682,6 +690,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -737,6 +746,7 @@ jobs:
         with:
           status: starting
           channel: '#github-actions-pipeline-status'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
