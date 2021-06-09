@@ -115,11 +115,13 @@ jobs:
         id: Checkout_Repo
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         run: |
-           cd /home/ubuntu/sunny/
-           if ! [ ls -lrt | grep Invideo_task_aws ]; then
+           cd /home/ubuntu/sunny/ ;
+           if ! [[ ls -lrt | grep Invideo_task_aws ]]; then
               echo "Performing git checkout..." ; cd /home/ubuntu/sunny/ ; sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git;
-           elif [ ls -lrt | grep Invideo_task_aws ] ; then
+              exit 0 ;
+           elif [[ ls -lrt | grep Invideo_task_aws ]] ; then
               echo "Repo already exists. Performing git pull origin dev..." ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo git pull origin dev;
+              exit 0 ;
            else
               exit 1;
            fi
