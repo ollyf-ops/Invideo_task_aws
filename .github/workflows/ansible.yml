@@ -488,7 +488,12 @@ jobs:
         run: |
            ssh rd_test '
            cd /home/ubuntu/sunny/Invideo_task_aws/
-           sudo terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" -var "aws_region=us-east-1" '
+           echo "\n\n"
+           pwd
+           echo "\n\n"
+           whoami
+           echo"\n\n"
+           terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -531,7 +536,7 @@ jobs:
           color: warning
 
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
-        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan '
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
