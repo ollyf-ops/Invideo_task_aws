@@ -115,12 +115,13 @@ jobs:
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
         shell: bash
         run: |
-           if ! grep -q -e "Invideo_task_aws" /home/ubuntu/sunny/ ; then
+           if ! [ -d "/home/ubuntu/sunny/Invideo_task_aws" ] ; then
+              echo "Directory /home/ubuntu/sunny/Invideo_task_aws does not exists."
               echo "Performing git checkout...";
               cd /home/ubuntu/sunny/;
               sudo git clone git@github.com-repo-Invideo_task_aws:Shashankreddysunkara/Invideo_task_aws.git;
-           elif grep -q -e "Invideo_task_aws" /home/ubuntu/sunny/ ; then
-              echo "Repo already exists. Performing git pull origin dev..." ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo git pull origin dev
+           elif [ -d "/home/ubuntu/sunny/Invideo_task_aws" ] ; then
+              echo -e "Directory \"/home/ubuntu/sunny/Invideo_task_aws\" already exists. \n Performing git pull origin dev... \n" ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo git pull origin dev
            else
               exit;
            fi
@@ -399,7 +400,7 @@ jobs:
           color: warning
 
       - name: 'Show pwd and make docker-compose deployment'
-        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd '
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -488,11 +489,11 @@ jobs:
         run: |
            ssh rd_test '
            cd /home/ubuntu/sunny/Invideo_task_aws/
-           echo "\n\n"
+           echo -e "\n\n"
            pwd
-           echo "\n\n"
+           echo -e "\n\n"
            whoami
-           echo"\n\n"
+           echo -e "\n\n"
            terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
