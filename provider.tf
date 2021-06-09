@@ -6,7 +6,7 @@ provider "aws" {
 }
 
 data "aws_vpc" "selected" {
-  default = vpc-10db657a
+  default = true
 }
 
 locals {
