@@ -498,7 +498,7 @@ jobs:
            echo -e "\n\n"
            whoami
            cd /home/ubuntu/sunny/Invideo_task_aws/
-           terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}"
+           terraform plan -out=aws.tfplan  -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
