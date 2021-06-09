@@ -6,7 +6,7 @@ on:
 env:
   CLONE_DIR: /home/ubuntu/sunny/
   continue: false
-  time: 2
+  time: 30
 #inputs:
 #  debug:
 #    required: true
