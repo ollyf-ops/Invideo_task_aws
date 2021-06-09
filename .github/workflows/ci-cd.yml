@@ -64,18 +64,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
 
-  Deployment_Directory:
+  Deployment_Path_Selection:
     needs: [ Ansible_Inventory_check ]
     runs-on: self-hosted
+    environment:
+      name: Deployment_Path_Selection
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -85,11 +87,11 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: STARTING - Deployment_Directory
+          status: STARTING - Deployment_Path_Selection
           color: warning
 
-      - name: 'Switch to deployment directory'
-        id: Deployment_Directory
+      - name: 'Select deployment path to checkout repo'
+        id: Deployment_Path_Selection
         run: ssh rd_test 'cd /home/ubuntu/sunny/ '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -105,7 +107,7 @@ jobs:
           # Updates existing message from the first step
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: aws
-          status: SUCCESS - Deployment_Directory
+          status: SUCCESS - Deployment_Path_Selection
           color: good
       - name: Notify slack fail
         if: failure()
@@ -114,23 +116,26 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel: aws
-          status: FAILED - Deployment_Directory
+          status: FAILED - Deployment_Path_Selection
           color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Checkout_Repo:
     needs: [Deployment_Directory]
     runs-on: self-hosted
+    environment:
+      name: Checkout_Repo
+      url: ${{ steps.create_release.outputs.html_url }}
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -146,7 +151,7 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: 'Clone repo in deployment directory'
         id: Checkout_Repo
@@ -208,18 +213,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Git_Branch_Checkout:
     needs: [Checkout_Repo]
     if: success()
+    environment:
+      name: Git_Branch_Checkout
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -238,6 +245,7 @@ jobs:
           ssh rd_test '
           cd /home/ubuntu/sunny/Invideo_task_aws/
           sudo git checkout dev '
+          echo "`git branch`"
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -265,18 +273,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Git_Status_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Checkout]
+    environment:
+      name: Git_Status_Check
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -318,18 +328,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Git_Diff_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Status_Check]
+    environment:
+      name: Git_Diff_Check
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -372,18 +384,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Git_Pull:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [ Git_Diff_Check ]
+    environment:
+      name: Git_Pull
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -430,18 +444,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Git_Branch_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Diff_Check]
+    environment:
+      name: Git_Branch_Check
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -456,7 +472,7 @@ jobs:
 
       - name: 'git branch'
         id: git_branch
-        run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
@@ -484,18 +500,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Deployment:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Check]
+    environment:
+      name: Deployment
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -538,8 +556,20 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
+
+      - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.DEPLOY_KEY }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            draft: true
+            prerelease: false
+
   Terraform_init:
     name: 'Terraform_init'
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -550,7 +580,7 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -593,19 +623,21 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Terraform_plan:
     name: 'Terraform_plan'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Terraform_init]
+    environment:
+      name: Terraform_plan
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -655,19 +687,21 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Terraform_apply:
     name: 'Terraform_apply'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Terraform_plan]
+    environment:
+      name: Terraform_apply
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -710,19 +744,21 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
   Terraform_Destroy:
     name: 'Terraform_Destroy'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [ Terraform_apply ]
+    environment:
+      name: Terraform_Destroy
     runs-on: self-hosted
     steps:
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: Notify slack success
         if: success()
@@ -738,7 +774,7 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
       - name: 'terraform destroy for destroying the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
         id: terraform_destroy
@@ -772,35 +808,64 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#workflows'
+          channel: '#github-actions-pipeline-status'
         if: always()
-workflows:
-  test-and-deploy:
-    jobs:
+#workflows:
+#  test-and-deploy:
+#    jobs:
+#      - Ansible_Inventory_check
+#      - slack/on-hold:
+#          context: slack-secrets
+#          filters:
+#            branches:
+#              only: dev
+#          requires:
+#            - Ansible_Inventory_check
+#      - pause_workflow:
+#          filters:
+#            branches:
+#              only:
+#                - dev
+#          requires:
+#            - Ansible_Inventory_check
+#            - slack/on-hold
+#          type: approval
+#      - Deployment_Directory:
+#          filters:
+#            branches:
+#              only:
+#                - dev
+#          requires:
+#            - pause_workflow
+  slack-workflow-status:
+    if: always()
+    name: Post Workflow Status To Slack
+    needs:
       - Ansible_Inventory_check
-      - slack/on-hold:
-          context: slack-secrets
-          filters:
-            branches:
-              only: dev
-          requires:
-            - Ansible_Inventory_check
-      - pause_workflow:
-          filters:
-            branches:
-              only:
-                - dev
-          requires:
-            - Ansible_Inventory_check
-            - slack/on-hold
-          type: approval
-      - Deployment_Directory:
-          filters:
-            branches:
-              only:
-                - dev
-          requires:
-            - pause_workflow
+      - Deployment_Path_Selection
+      - Git_Branch_Checkout
+      - Git_Status_Check
+      - Git_Diff_Check
+      - Git_Pull
+      - Git_Branch_Check
+      - Deployment
+      - Terraform_init
+      - Terraform_plan
+      - Terraform_apply
+      - Terraform_Destroy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Workflow Notification
+        uses: Gamesight/slack-workflow-status@master
+        with:
+          # Required Input
+          repo_token: ${{secrets.DEPLOY_KEY}}
+          slack_webhook_url: ${{secrets.SLACK_WEBHOOK_URL}}
+          # Optional Input
+          channel: '#github-actions-pipeline-status.'
+          name: 'Shashank Workflow Bot'
+          icon_emoji: ':service_dog:'
+          icon_url: 'https://avatars0.githubusercontent.com/u/1701160?s=96&v=4'
 #  print:
 #    name: Print
 #    runs-on: ubuntu-latest
