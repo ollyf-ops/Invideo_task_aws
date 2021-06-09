@@ -7,6 +7,8 @@ env:
   CLONE_DIR: /home/ubuntu/sunny/
   continue: false
   time: 30
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 #inputs:
 #  debug:
 #    required: true
@@ -16,6 +18,12 @@ jobs:
   Ansible_Inventory_check:
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+        if: always()
+
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -27,9 +35,11 @@ jobs:
           status: STARTING - Check ansible inventory connectivity
           color: warning
       - name: 'Check ansible inventory connectivity'
+        id: Check_ansible_inventory_connectivity
         run: ssh rd_test 'sudo ansible testInstances -m ping'
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
+
       - name: Notify slack success
         if: success()
         env:
@@ -50,11 +60,23 @@ jobs:
           channel: aws
           status: FAILED - Check ansible inventory connectivity
           color: danger
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
 
   Deployment_Directory:
     needs: [ Ansible_Inventory_check ]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -94,11 +116,22 @@ jobs:
           channel: aws
           status: FAILED - Deployment_Directory
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Checkout_Repo:
     needs: [Deployment_Directory]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -109,7 +142,12 @@ jobs:
           channel: aws
           status: STARTING - Checkout_Repo
           color: warning
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: 'Clone repo in deployment directory'
         id: Checkout_Repo
         if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
@@ -166,12 +204,23 @@ jobs:
           channel: aws
           status: FAILED - Checkout_Repo
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Git_Branch_Checkout:
     needs: [Checkout_Repo]
     if: success()
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -184,6 +233,7 @@ jobs:
           color: warning
 
       - name: 'Checkout git branch'
+        id: Checkout_git_branch
         run:  |
           ssh rd_test '
           cd /home/ubuntu/sunny/Invideo_task_aws/
@@ -211,12 +261,23 @@ jobs:
           channel: aws
           status: FAILED - Git_Branch_Checkout
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Git_Status_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Checkout]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -229,6 +290,7 @@ jobs:
           color: warning
 
       - name: 'git status'
+        id: git_status
         run: ssh rd_test ' su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git status '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -252,12 +314,23 @@ jobs:
           channel: aws
           status: FAILED - Git_Status_Check
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Git_Diff_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Status_Check]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -270,6 +343,7 @@ jobs:
           color: warning
 
       - name: 'git diff'
+        id: git_diff
         run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git diff '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -294,12 +368,23 @@ jobs:
           channel: aws
           status: FAILED - Git_Diff_Check
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Git_Pull:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [ Git_Diff_Check ]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -312,6 +397,7 @@ jobs:
           color: warning
 
       - name: "Pull repo"
+        id: Pull_repo
         shell: "bash"
         run: |
           ssh rd_test '
@@ -340,12 +426,23 @@ jobs:
           channel: aws
           status: FAILED - Git_Pull
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Git_Branch_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Diff_Check]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -358,6 +455,7 @@ jobs:
           color: warning
 
       - name: 'git branch'
+        id: git_branch
         run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git branch ; echo -e "\n Deploying to production server on branch $GITHUB_REF \n" '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -382,12 +480,23 @@ jobs:
           channel: aws
           status: FAILED - Git_Branch_Check
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Deployment:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Check]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -400,6 +509,7 @@ jobs:
           color: warning
 
       - name: 'Show pwd and make docker-compose deployment'
+        id: docker_compose_deployment
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo -e " Current path of working dir is " ; pwd '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -424,13 +534,24 @@ jobs:
           channel: aws
           status: FAILED - Deployment
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Terraform_init:
     name: 'Terraform_init'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Deployment]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -443,6 +564,7 @@ jobs:
           color: warning
 
       - name: 'Terraform init'
+        id: Terraform_init
         run: ssh rd_test 'su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; echo "\n Setting up provisioner \n " ; sudo terraform init '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -467,13 +589,24 @@ jobs:
           channel: aws
           status: FAILED - Terraform_init
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Terraform_plan:
     name: 'Terraform_plan'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Terraform_init]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -518,13 +651,24 @@ jobs:
           channel: aws
           status: FAILED - Terraform_plan
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Terraform_apply:
     name: 'Terraform_apply'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Terraform_plan]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -562,13 +706,24 @@ jobs:
           channel: aws
           status: FAILED - Terraform_apply
           color: danger
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
   Terraform_Destroy:
     name: 'Terraform_Destroy'
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [ Terraform_apply ]
     runs-on: self-hosted
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: Notify slack success
         if: success()
         id: slack # IMPORTANT: reference this step ID value in future Slack steps
@@ -579,8 +734,14 @@ jobs:
           channel: aws
           status: STARTING - Terraform_Destroy
           color: warning
-
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
       - name: 'terraform destroy for destroying the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
+        id: terraform_destroy
         if: ${{ steps.terraform_apply.outcome == 'failure' }}
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform destroy -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }} '
         continue-on-error: ${{ fromJSON(env.continue) }}
@@ -606,6 +767,40 @@ jobs:
           channel: aws
           status: FAILED - Terraform_Destroy
           color: danger
+
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
+workflows:
+  test-and-deploy:
+    jobs:
+      - Ansible_Inventory_check
+      - slack/on-hold:
+          context: slack-secrets
+          filters:
+            branches:
+              only: dev
+          requires:
+            - Ansible_Inventory_check
+      - pause_workflow:
+          filters:
+            branches:
+              only:
+                - dev
+          requires:
+            - Ansible_Inventory_check
+            - slack/on-hold
+          type: approval
+      - Deployment_Directory:
+          filters:
+            branches:
+              only:
+                - dev
+          requires:
+            - pause_workflow
 #  print:
 #    name: Print
 #    runs-on: ubuntu-latest
