@@ -561,7 +561,6 @@ jobs:
           status: FAILED - Terraform_apply
           color: danger
 
-
 #  print:
 #    name: Print
 #    runs-on: ubuntu-latest
