@@ -486,6 +486,7 @@ jobs:
           color: warning
 
       - name: 'terraform plan'
+        id: terraform_plan
         run: |
            cd /home/ubuntu/sunny/Invideo_task_aws/
            echo -e "\n\n"
@@ -536,6 +537,7 @@ jobs:
           color: warning
 
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
+        id: terraform_apply
         run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform apply aws.tfplan '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
@@ -561,7 +563,49 @@ jobs:
           status: FAILED - Terraform_apply
           color: danger
 
+  Terraform_Destroy:
+    name: 'Terraform_Destroy'
+    if: ${{ github.ref == 'refs/heads/dev' }}
+    needs: [ Terraform_apply ]
+    runs-on: self-hosted
+    steps:
+      - name: Notify slack success
+        if: success()
+        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: aws
+          status: STARTING - Terraform_Destroy
+          color: warning
 
+      - name: 'terraform destroy for destroying the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
+        if: $ {{ steps.terraform_apply.outcome == failure }}
+        run: ssh rd_test 'cd /home/ubuntu/sunny/Invideo_task_aws/ ; sudo terraform destroy -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" -var "aws_secret_key=${{ secrets.AWS_SECRET_KEY }} '
+        continue-on-error: ${{ fromJSON(env.continue) }}
+        timeout-minutes: ${{ fromJSON(env.time) }}
+
+      - name: Notify slack success
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          # Updates existing message from the first step
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: aws
+          status: SUCCESS - Terraform_Destroy
+          color: good
+      - name: Notify slack fail
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: aws
+          status: FAILED - Terraform_Destroy
+          color: danger
 #  print:
 #    name: Print
 #    runs-on: ubuntu-latest
