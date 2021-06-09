@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: act10ns/slack@v1
         with:
-          status: ${{ Running }}
+          status: Running
         if: always()
 
       - name: Notify slack success
