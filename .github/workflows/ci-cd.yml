@@ -123,7 +123,7 @@ jobs:
           channel: '#github-actions-pipeline-status'
         if: always()
   Checkout_Repo:
-    needs: [Deployment_Directory]
+    needs: [Deployment_Path_Selection]
     runs-on: self-hosted
     environment:
       name: Checkout_Repo
@@ -152,7 +152,7 @@ jobs:
         if: always()
       - name: 'Clone repo in deployment directory'
         id: Checkout_Repo
-        if: ${{ steps.Deployment_Directory.outcome == 'success' }} && success()
+        if: ${{ steps.Deployment_Path_Selection.outcome == 'success' }} && success()
         shell: bash
         run: |
            if ! [ -d "/home/ubuntu/sunny/Invideo_task_aws" ] ; then
