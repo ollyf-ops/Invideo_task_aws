@@ -23,42 +23,42 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
           if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Check ansible inventory connectivity
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Check ansible inventory connectivity
+#          color: warning
       - name: 'Check ansible inventory connectivity'
         id: Check_ansible_inventory_connectivity
         run: ssh rd_test 'sudo ansible testInstances -m ping'
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Check ansible inventory connectivity
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Check ansible inventory connectivity
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Check ansible inventory connectivity
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Check ansible inventory connectivity
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -77,16 +77,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Deployment_Path_Selection
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Deployment_Path_Selection
+#          color: warning
 
       - name: 'Select deployment path to checkout repo'
         id: Deployment_Path_Selection
@@ -96,26 +96,26 @@ jobs:
         env:
           Deployment_Directory_CONTEXT: ${{ toJSON(steps) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Deployment_Path_Selection
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Deployment_Path_Selection
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Deployment_Path_Selection
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Deployment_Path_Selection
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -134,16 +134,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Checkout_Repo
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Checkout_Repo
+#          color: warning
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -186,26 +186,26 @@ jobs:
 #          ref: autogenerated
 #          path: '/home/ubuntu/'
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Checkout_Repo
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Checkout_Repo
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Checkout_Repo
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Checkout_Repo
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -224,16 +224,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Git_Branch_Checkout
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Git_Branch_Checkout
+#          color: warning
 
       - name: 'Checkout git branch'
         id: Checkout_git_branch
@@ -245,26 +245,26 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Git_Branch_Checkout
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Git_Branch_Checkout
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Git_Branch_Checkout
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Git_Branch_Checkout
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -283,42 +283,42 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Git_Status_Check
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Git_Status_Check
+#          color: warning
 
       - name: 'git status'
         id: git_status
         run: ssh rd_test ' su ubuntu ; cd /home/ubuntu/sunny/Invideo_task_aws/ ; git status '
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Git_Status_Check
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Git_Status_Check
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Git_Status_Check
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Git_Status_Check
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -337,16 +337,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
           if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Git_Diff_Check
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Git_Diff_Check
+#          color: warning
 
       - name: 'git diff'
         id: git_diff
@@ -354,32 +354,32 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Git_Diff_Check
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Git_Diff_Check
-          color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Git_Diff_Check
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Git_Diff_Check
+#          color: danger
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Git_Pull:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [ Git_Diff_Check ]
@@ -392,16 +392,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Git_Pull
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Git_Pull
+#          color: warning
 
       - name: "Pull repo"
         id: Pull_repo
@@ -413,26 +413,26 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Git_Pull
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Git_Pull
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Git_Pull
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Git_Pull
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -451,16 +451,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Git_Branch_Check
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Git_Branch_Check
+#          color: warning
 
       - name: 'git branch'
         id: git_branch
@@ -468,26 +468,26 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Git_Branch_Check
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Git_Branch_Check
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Git_Branch_Check
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Git_Branch_Check
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -506,16 +506,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Deployment
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Deployment
+#          color: warning
 
       - name: 'Show pwd and make docker-compose deployment'
         id: docker_compose_deployment
@@ -523,26 +523,26 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Deployment
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Deployment
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Deployment
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Deployment
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -572,16 +572,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Terraform_init
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Terraform_init
+#          color: warning
 
       - name: 'Terraform init'
         id: Terraform_init
@@ -589,32 +589,32 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Terraform_init
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Terraform_init
-          color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Terraform_init
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Terraform_init
+#          color: danger
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Terraform_plan:
     name: 'Terraform_plan'
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -628,16 +628,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Terraform_plan
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Terraform_plan
+#          color: warning
 
       - name: 'terraform plan'
         id: terraform_plan
@@ -652,32 +652,32 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Terraform_plan
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Terraform_plan
-          color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Terraform_plan
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Terraform_plan
+#          color: danger
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Terraform_apply:
     name: 'Terraform_apply'
     if: ${{ github.ref == 'refs/heads/dev' }}
@@ -691,16 +691,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Terraform_apply
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Terraform_apply
+#          color: warning
 
       - name: 'terraform apply for Launching the EC2 cluster, rds, LB, SG, VPC, SUBNETS, and NAT'
         id: terraform_apply
@@ -708,26 +708,26 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Terraform_apply
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Terraform_apply
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Terraform_apply
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Terraform_apply
+#          color: danger
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -747,16 +747,16 @@ jobs:
           status: starting
           channel: '#github-actions-pipeline-status'
         if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Terraform_Destroy
-          color: warning
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Terraform_Destroy
+#          color: warning
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -770,26 +770,26 @@ jobs:
         continue-on-error: ${{ fromJSON(env.continue) }}
         timeout-minutes: ${{ fromJSON(env.time) }}
 
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Terraform_Destroy
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Terraform_Destroy
-          color: danger
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Terraform_Destroy
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Terraform_Destroy
+#          color: danger
 
       - uses: act10ns/slack@v1
         with:
