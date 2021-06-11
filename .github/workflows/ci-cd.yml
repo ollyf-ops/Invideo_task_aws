@@ -870,7 +870,7 @@ jobs:
       - Git_Branch_Checkout
       - Git_Status_Check
       - Git_Diff_Check
-      - Git_Pull
+#      - Git_Pull
       - Git_Branch_Check
       - Deployment
       - Terraform_init
