@@ -175,9 +175,7 @@ jobs:
           # Otherwise, uses the default branch.
           ref: ${{ env.CHECKOUT_REF }}
           token: ${{ secrets.GITHUB_TOKEN }}
-        defaults:
-          run:
-            working-directory: ${{ env.CHECKOUT_WORKSPACE }}
+          working-directory: ${{ env.CHECKOUT_WORKSPACE }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
