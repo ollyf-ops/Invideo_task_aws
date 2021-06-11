@@ -5,6 +5,9 @@ on:
       - dev
 env:
   CLONE_DIR: /home/ubuntu/sunny/
+  CHECKOUT_WORKSPACE: /home/ubuntu/
+  CHECKOUT_REPO: Shashankreddysunkara/Invideo_task_aws
+  CHECKOUT_REF: refs/heads/dev
   continue: false
   time: 30
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -18,6 +21,17 @@ jobs:
   Ansible_Inventory_check:
     runs-on: self-hosted
     steps:
+      - name: echo-default-env-variables
+        run: |
+          echo "Home: ${HOME}"
+          echo "GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}"
+          echo "GITHUB_ACTIONS: ${GITHUB_ACTIONS}"
+          echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
+          echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
+          echo "GITHUB_REF: ${GITHUB_REF}"
       - uses: act10ns/slack@v1
         with:
           status: starting
@@ -59,12 +73,12 @@ jobs:
           channel: aws
           status: FAILED - Check ansible inventory connectivity
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
 
   Deployment_Path_Selection:
     needs: [ Ansible_Inventory_check ]
@@ -116,18 +130,18 @@ jobs:
           channel: aws
           status: FAILED - Deployment_Path_Selection
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Checkout_Repo:
     needs: [Deployment_Path_Selection]
     runs-on: self-hosted
     environment:
       name: Checkout_Repo
-      url: ${{ steps.create_release.outputs.html_url }}
+#      url: ${{ steps.create_release.outputs.html_url }}
     steps:
       - uses: act10ns/slack@v1
         with:
@@ -144,12 +158,37 @@ jobs:
           channel: aws
           status: STARTING - Checkout_Repo
           color: warning
-      - uses: act10ns/slack@v1
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
+      - uses: actions/checkout@v2
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: ${{ env.CHECKOUT_REPO }}
+
+          # The branch, tag or SHA to checkout. When checking out the repository that
+          # triggered a workflow, this defaults to the reference or SHA for that event.
+          # Otherwise, uses the default branch.
+          ref: ${{ env.CHECKOUT_REF }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+        defaults:
+          run:
+            working-directory: ${{ env.CHECKOUT_WORKSPACE }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
       - name: 'Clone repo in deployment directory'
         id: Checkout_Repo
         if: ${{ steps.Deployment_Path_Selection.outcome == 'success' }} && success()
@@ -206,12 +245,12 @@ jobs:
           channel: aws
           status: FAILED - Checkout_Repo
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Git_Branch_Checkout:
     needs: [Checkout_Repo]
     if: success()
@@ -265,12 +304,12 @@ jobs:
           channel: aws
           status: FAILED - Git_Branch_Checkout
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Git_Status_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Checkout]
@@ -319,12 +358,12 @@ jobs:
           channel: aws
           status: FAILED - Git_Status_Check
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Git_Diff_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Status_Check]
@@ -374,71 +413,71 @@ jobs:
           channel: aws
           status: FAILED - Git_Diff_Check
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
-  Git_Pull:
-    if: ${{ github.ref == 'refs/heads/dev' }}
-    needs: [ Git_Diff_Check ]
-    environment:
-      name: Git_Pull
-    runs-on: self-hosted
-    steps:
-      - uses: act10ns/slack@v1
-        with:
-          status: starting
-          channel: '#github-actions-pipeline-status'
-        if: always()
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: STARTING - Git_Pull
-          color: warning
-
-      - name: "Pull repo"
-        id: Pull_repo
-        shell: "bash"
-        run: |
-          ssh rd_test '
-          cd /home/ubuntu/sunny/Invideo_task_aws/
-          sudo git pull origin dev '
-        continue-on-error: ${{ fromJSON(env.continue) }}
-        timeout-minutes: ${{ fromJSON(env.time) }}
-
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          # Updates existing message from the first step
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: aws
-          status: SUCCESS - Git_Pull
-          color: good
-      - name: Notify slack fail
-        if: failure()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: aws
-          status: FAILED - Git_Pull
-          color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
+#  Git_Pull:
+#    if: ${{ github.ref == 'refs/heads/dev' }}
+#    needs: [ Git_Diff_Check ]
+#    environment:
+#      name: Git_Pull
+#    runs-on: self-hosted
+#    steps:
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: starting
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
+#      - name: Notify slack success
+#        if: success()
+#        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: STARTING - Git_Pull
+#          color: warning
+#
+#      - name: "Pull repo"
+#        id: Pull_repo
+#        shell: "bash"
+#        run: |
+#          ssh rd_test '
+#          cd /home/ubuntu/sunny/Invideo_task_aws/
+#          sudo git pull origin dev '
+#        continue-on-error: ${{ fromJSON(env.continue) }}
+#        timeout-minutes: ${{ fromJSON(env.time) }}
+#
+#      - name: Notify slack success
+#        if: success()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          # Updates existing message from the first step
+#          message_id: ${{ steps.slack.outputs.message_id }}
+#          channel: aws
+#          status: SUCCESS - Git_Pull
+#          color: good
+#      - name: Notify slack fail
+#        if: failure()
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+#        uses: voxmedia/github-action-slack-notify-build@v1
+#        with:
+#          channel: aws
+#          status: FAILED - Git_Pull
+#          color: danger
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Git_Branch_Check:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Diff_Check]
@@ -488,12 +527,12 @@ jobs:
           channel: aws
           status: FAILED - Git_Branch_Check
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
   Deployment:
     if: ${{ github.ref == 'refs/heads/dev' }}
     needs: [Git_Branch_Check]
@@ -543,18 +582,18 @@ jobs:
           channel: aws
           status: FAILED - Deployment
           color: danger
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-pipeline-status'
-        if: always()
+#      - uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#github-actions-pipeline-status'
+#        if: always()
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_KEY }}
+          GITHUB_TOKEN: ${{ secrets.SLACK_WORKFLOW_NOTIFICATION_ACCESS_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -846,7 +885,7 @@ jobs:
         uses: Gamesight/slack-workflow-status@master
         with:
           # Required Input
-          repo_token: ${{secrets.DEPLOY_KEY}}
+          repo_token: ${{secrets.SLACK_WORKFLOW_NOTIFICATION_ACCESS_TOKEN}}
           slack_webhook_url: ${{secrets.SLACK_WEBHOOK_URL}}
           # Optional Input
           channel: '#github-actions-pipeline-status.'
